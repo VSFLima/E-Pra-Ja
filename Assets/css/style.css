@@ -1,0 +1,186 @@
+/* E-Pra-Já v3: Arquivo de Estilo Global (style.css) */
+/* Localização: /assets/css/style.css */
+
+/* --- 1. Importação de Fonte e Novas Variáveis Globais --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --cor-primaria: #6B46C1; /* Roxo */
+    --cor-primaria-escura: #553C9A;
+    --cor-secundaria: #1A202C; /* Preto Forte */
+    --cor-erro: #E53E3E;       /* Vermelho */
+    --cor-fundo: #FFFFFF;
+    --cor-fundo-alternativa: #F7FAFC;
+    --cor-branco: #FFFFFF;
+    --cor-cinza-claro: #E2E8F0;
+    --cor-texto-suave: #4A5568;
+    --cor-sucesso: #38A169;
+    --sombra-padrao: 0 4px 6px rgba(0, 0, 0, 0.05);
+    --sombra-media: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --borda-radius: 12px;
+    --transicao-padrao: all 0.3s ease-in-out;
+}
+
+/* --- 2. Animações e Reset --- */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+html { scroll-behavior: smooth; }
+body { background-color: var(--cor-fundo); color: var(--cor-secundaria); line-height: 1.7; overflow-x: hidden; }
+.container { width: 90%; max-width: 1100px; margin: 0 auto; }
+a { text-decoration: none; color: var(--cor-primaria); transition: var(--transicao-padrao); }
+a:hover { color: var(--cor-primaria-escura); }
+
+/* --- 3. Componentes Globais (Botões, etc.) --- */
+.btn {
+    display: inline-block; padding: 12px 28px; border-radius: var(--borda-radius);
+    border: none; cursor: pointer; font-weight: 600; font-size: 1rem;
+    text-align: center; transition: var(--transicao-padrao);
+}
+.btn-primario { background-color: var(--cor-primaria); color: var(--cor-branco); }
+.btn-primario:hover { background-color: var(--cor-primaria-escura); transform: translateY(-2px); box-shadow: var(--sombra-media); }
+.btn-primario:disabled { background-color: #B794F4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* --- 4. Cabeçalho e Rodapé Globais (v3) --- */
+.global-header {
+    background-color: var(--cor-branco); padding: 1rem 0;
+    position: sticky; top: 0; z-index: 1000;
+    border-bottom: 1px solid var(--cor-cinza-claro);
+}
+.navbar { display: flex; justify-content: space-between; align-items: center; }
+.nav-logo img { height: 35px; }
+.nav-links a { color: var(--cor-secundaria); margin: 0 15px; font-weight: 500; }
+.nav-links a:not(.btn):hover { color: var(--cor-primaria); }
+
+.global-footer {
+    background-color: var(--cor-secundaria); color: var(--cor-cinza-claro); padding: 60px 0 20px 0;
+}
+.footer-content {
+    display: flex; justify-content: space-around; flex-wrap: wrap; gap: 2rem;
+    text-align: center; padding-bottom: 40px; margin-bottom: 20px;
+    border-bottom: 1px solid #4A5568;
+}
+.footer-info, .footer-contact, .footer-social { flex: 1; min-width: 250px; }
+.footer-info .logo { margin-bottom: 1rem; }
+.footer h4 { margin-bottom: 1rem; font-weight: 600; color: var(--cor-branco); }
+.footer-contact p a { color: var(--cor-cinza-claro); }
+.footer-social a { color: var(--cor-cinza-claro); font-size: 1.5rem; margin: 0 10px; }
+.footer-bottom { text-align: center; font-size: 0.9rem; padding-top: 20px; }
+
+/* --- 5. Estilos da Página Principal (index.html - v3) --- */
+.hero { padding: 80px 0; text-align: center; }
+.hero h1 { font-size: 3.2rem; font-weight: 800; line-height: 1.2; max-width: 800px; margin: 0 auto; }
+.hero p.subtitulo { font-size: 1.2rem; color: var(--cor-texto-suave); max-width: 700px; margin: 1.5rem auto 2.5rem; }
+.hero-mockup {
+    width: 100%; max-width: 800px; margin: 3rem auto 0;
+    border-radius: var(--borda-radius); box-shadow: var(--sombra-media);
+    border: 8px solid #1A202C;
+}
+.secao { padding: 80px 0; text-align: center; }
+.secao h2 { font-size: 2.5rem; font-weight: 700; }
+.secao .subtitulo { font-size: 1.1rem; color: var(--cor-texto-suave); max-width: 600px; margin: 1rem auto 4rem; }
+.como-funciona-step {
+    display: grid; grid-template-columns: 1fr 1fr; align-items: center;
+    gap: 4rem; text-align: left; margin-bottom: 4rem;
+}
+.como-funciona-step:nth-child(even) .step-imagem { grid-column: 1; grid-row: 1; }
+.step-numero { font-size: 1.2rem; font-weight: 700; color: var(--cor-primaria); display: inline-block; margin-bottom: 1rem; }
+.step-texto h3 { font-size: 2rem; }
+.step-imagem { border-radius: var(--borda-radius); box-shadow: var(--sombra-media); border: 6px solid #1A202C; width: 100%; }
+.recursos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; text-align: left; }
+.recurso-card { background-color: var(--cor-fundo-alternativa); padding: 2rem; border-radius: var(--borda-radius); transition: var(--transicao-padrao); }
+.recurso-card:hover { transform: translateY(-5px); box-shadow: var(--sombra-media); }
+.recurso-card .icon { font-size: 2rem; color: var(--cor-primaria); margin-bottom: 1rem; }
+.cta-final { background-color: var(--cor-secundaria); color: var(--cor-branco); padding: 80px 0; border-radius: 20px; margin: 40px auto; }
+.cta-final h2 { font-size: 2.8rem; }
+.cta-final p { margin: 1rem auto 2rem; max-width: 500px; opacity: 0.8; }
+
+.precos-grid { display: flex; justify-content: center; flex-wrap: wrap; gap: 2rem; margin-top: 4rem; }
+.preco-card {
+    background-color: var(--cor-branco); padding: 2.5rem 2rem; border-radius: var(--borda-radius);
+    border: 1px solid var(--cor-cinza-claro); text-align: center; transition: var(--transicao-padrao);
+    width: 100%; max-width: 350px;
+}
+.preco-card.destaque { border: 2px solid var(--cor-primaria); transform: scale(1.05); }
+.preco-card h3 { font-size: 1.5rem; font-weight: 600; }
+.preco-card .valor { font-size: 3.5rem; font-weight: 800; color: var(--cor-primaria); margin: 1rem 0; }
+.preco-card .valor span { font-size: 1rem; font-weight: 500; color: var(--cor-texto-suave); }
+.preco-card .descricao { color: var(--cor-texto-suave); margin-bottom: 2rem; min-height: 50px; }
+.preco-card ul { list-style: none; text-align: left; margin-bottom: 2.5rem; }
+.preco-card ul li { margin-bottom: 1rem; display: flex; align-items: center; }
+.preco-card ul li i { color: var(--cor-sucesso); margin-right: 10px; }
+
+/* --- 6. Estilos para Login/Cadastro (Completo) --- */
+.login-body {
+    display: flex; flex-direction: column; min-height: 100vh;
+    background-color: var(--cor-fundo-alternativa);
+}
+.login-main-content {
+    flex-grow: 1; display: flex; justify-content: center;
+    align-items: center; padding: 2rem 0;
+}
+.login-container {
+    background-color: var(--cor-branco); padding: 2.5rem; border-radius: var(--borda-radius);
+    box-shadow: var(--sombra-media); width: 90%; max-width: 450px; text-align: center;
+    animation: fadeIn 0.5s ease-out;
+}
+.login-container.cadastro-restaurante { max-width: 600px; } /* Tamanho maior para o form de cadastro */
+.login-container .logo img { height: 40px; margin: 0 auto 1.5rem; }
+.form-group { margin-bottom: 1rem; text-align: left; }
+.form-group label { font-weight: 500; margin-bottom: 0.5rem; display: block; }
+.form-group input, .form-group textarea {
+    width: 100%; padding: 12px; border: 1px solid var(--cor-cinza-claro);
+    border-radius: var(--borda-radius); font-size: 1rem;
+}
+#cnpj-section {
+    background-color: var(--cor-fundo-alternativa); border: 1px dashed var(--cor-cinza-claro);
+    padding: 1rem; margin: 1rem 0; border-radius: var(--borda-radius);
+}
+.form-titulo-secao {
+    margin-top: 1.5rem; margin-bottom: 1rem; border-bottom: 1px solid var(--cor-cinza-claro);
+    padding-bottom: 0.5rem; font-size: 1.1rem; font-weight: 600;
+}
+
+/* --- 7. Estilos da Página do Cardápio --- */
+.cardapio-header { background-color: var(--cor-branco); padding: 2rem 0; border-bottom: 1px solid var(--cor-cinza-claro); text-align: center; }
+.cardapio-header .logo-restaurante { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: 0 auto 1rem; border: 4px solid var(--cor-branco); box-shadow: var(--sombra-padrao); }
+.status-loja { display: inline-block; padding: 5px 15px; border-radius: 20px; font-weight: 600; font-size: 0.9rem; margin-top: 1rem; }
+.status-loja.aberta { background-color: var(--cor-sucesso); color: var(--cor-branco); }
+.status-loja.fechada { background-color: var(--cor-erro); color: var(--cor-branco); }
+.cardapio-layout { display: flex; flex-wrap: wrap; gap: 2rem; margin-top: 2rem; align-items: flex-start; }
+.cardapio-items { flex: 3; min-width: 320px; }
+.cardapio-carrinho { flex: 1.5; background-color: var(--cor-branco); padding: 1.5rem; border-radius: var(--borda-radius); align-self: flex-start; position: sticky; top: 100px; border: 1px solid var(--cor-cinza-claro); }
+.item-card { display: flex; background-color: var(--cor-branco); border-radius: var(--borda-radius); margin-bottom: 1.5rem; border: 1px solid var(--cor-cinza-claro); overflow: hidden; }
+.item-imagem { width: 120px; height: 120px; flex-shrink: 0; object-fit: cover; }
+.item-info { padding: 1rem; display: flex; flex-direction: column; flex-grow: 1; }
+.item-info h4 { margin: 0 0 0.5rem 0; font-size: 1.1rem; }
+.item-info p { margin: 0 0 0.5rem 0; font-size: 0.9rem; color: var(--cor-texto-suave); flex-grow: 1; }
+.item-preco { font-weight: 700; font-size: 1.1rem; }
+.item-acao { display: flex; align-items: center; justify-content: center; padding: 1rem; }
+.btn-add { background-color: var(--cor-primaria); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.5rem; cursor: pointer; }
+
+/* --- 8. Estilos do Modal de Checkout --- */
+.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.6); display: none; justify-content: center; align-items: center; z-index: 2000; }
+.modal-overlay.visible { display: flex; }
+.modal-container { background: var(--cor-branco); padding: 2rem; border-radius: var(--borda-radius); width: 90%; max-width: 500px; }
+
+/* --- 9. Responsividade --- */
+@media (max-width: 992px) {
+    .hero h1 { font-size: 2.5rem; }
+    .como-funciona-step { grid-template-columns: 1fr; gap: 2rem; text-align: center; }
+    .como-funciona-step:nth-child(even) .step-imagem { grid-column: auto; grid-row: auto; }
+    .step-imagem { margin-top: 1rem; }
+}
+@media (max-width: 768px) {
+    .nav-links a:not(.btn) { display: none; }
+    .hero h1 { font-size: 2rem; }
+    .hero p.subtitulo { font-size: 1rem; }
+    .secao { padding: 60px 0; }
+    .secao h2 { font-size: 2rem; }
+    .cta-final h2 { font-size: 2.2rem; }
+    .cardapio-layout { flex-direction: column; }
+    .cardapio-carrinho { position: static; width: 100%; }
+    .preco-card.destaque { transform: scale(1); }
+    .step-texto h3 { font-size: 1.5rem; }
+}
+

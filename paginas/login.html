@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - E-Pra-Já</title>
+
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+</head>
+<body class="login-body">
+
+    <!-- CABEÇALHO GLOBAL -->
+    <div id="global-header-placeholder"></div>
+
+    <!-- CONTEÚDO PRINCIPAL (NOVO WRAPPER) -->
+    <main class="login-main-content">
+        <div class="login-container">
+            <header class="login-header">
+                <a href="/" class="logo">
+                    <img src="../assets/images/logo.svg" alt="Logo E-Pra Já">
+                </a>
+                <p style="margin-top: 1.5rem;">Bem-vindo de volta! Acesse seu painel.</p>
+            </header>
+
+            <div id="message-container" class="message"></div>
+
+            <form id="login-form" style="text-align: left;">
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label for="email" style="font-weight: 500; margin-bottom: 0.5rem; display: block;">E-mail</label>
+                    <input type="email" id="email" name="email" required style="width: 100%; padding: 12px; border: 1px solid var(--cor-cinza-claro); border-radius: var(--borda-radius);">
+                </div>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label for="password" style="font-weight: 500; margin-bottom: 0.5rem; display: block;">Senha</label>
+                    <input type="password" id="password" name="password" required style="width: 100%; padding: 12px; border: 1px solid var(--cor-cinza-claro); border-radius: var(--borda-radius);">
+                </div>
+
+                <button type="submit" id="submit-btn" class="btn btn-primario" style="width: 100%; margin-top: 1rem;">Entrar</button>
+            </form>
+
+            <div class="login-footer" style="margin-top: 1.5rem;">
+                <p>Ainda não tem uma conta? <a href="cadastro.html">Crie uma agora</a></p>
+                <p><a href="password-reset.html">Esqueceu sua senha?</a></p>
+            </div>
+        </div>
+    </main>
+
+    <!-- RODAPÉ GLOBAL -->
+    <div id="global-footer-placeholder"></div>
+
+    <!-- Scripts -->
+    <script type="module" src="../js/components.js"></script>
+    <script type="module" src="../js/login.js"></script>
+
+</body>
+</html>
+

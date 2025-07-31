@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Gestor - E-Pra-Já</title>
+
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/panel.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    
+    <!-- CSS CORRIGIDO PARA O LAYOUT -->
+    <style>
+        /* Garante que o layout ocupe a altura total e remove margens padrão */
+        html, body.panel-body {
+            height: 100%;
+            margin: 0;
+            overflow-x: hidden; /* Previne scroll horizontal */
+        }
+
+        /* Aplica Flexbox ao corpo para alinhar a sidebar e o conteúdo principal */
+        .panel-body {
+            display: flex;
+        }
+
+        /* Define uma largura fixa para a sidebar e garante que ela não encolha */
+        .sidebar {
+            flex-shrink: 0; 
+            /* A largura exata deve ser a mesma definida no seu arquivo panel.css */
+            /* Exemplo: width: 250px; */
+        }
+
+        /* Faz o conteúdo principal ocupar todo o espaço restante */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column; /* Organiza o conteúdo principal em coluna */
+            height: 100vh; /* Ocupa a altura total da tela */
+            overflow-y: auto; /* Adiciona scroll apenas no conteúdo principal */
+        }
+        
+        /* Garante que as seções dentro do main-content ocupem o espaço necessário */
+        .main-content > section {
+            flex-shrink: 0;
+        }
+
+        /* Estilo para o novo rodapé do painel */
+        .page-footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+            margin-top: auto; /* Empurra o rodapé para o final do container flex */
+        }
+    </style>
+</head>
+<body class="panel-body">
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="logo">
+                <img src="../assets/images/logo.svg" alt="Logo E-Pra Já">
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="#dashboard" class="active"><i class="fa-solid fa-chart-line icon"></i><span>Dashboard</span></a></li>
+                <li><a href="#restaurantes"><i class="fa-solid fa-store icon"></i><span>Restaurantes</span></a></li>
+                <li><a href="#usuarios"><i class="fa-solid fa-users icon"></i><span>Usuários</span></a></li>
+                <li><a href="#indicacoes"><i class="fa-solid fa-gift icon"></i><span>Indicações</span></a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+             <a href="#" id="btn-logout"><i class="fa-solid fa-right-from-bracket icon"></i><span>Sair</span></a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="page-header">
+            <h1>Dashboard do Gestor</h1>
+            <p>Bem-vindo, <strong id="nome-utilizador">admin</strong>. Visão geral da plataforma.</p>
+        </header>
+
+        <section id="dashboard" class="metric-cards">
+            <div class="metric-card">
+                <i class="fa-solid fa-store icon"></i>
+                <div class="info">
+                    <div id="total-restaurantes" class="number">0</div>
+                    <div class="label">Restaurantes</div>
+                </div>
+            </div>
+            <div class="metric-card">
+                <i class="fa-solid fa-users icon"></i>
+                <div class="info">
+                    <div id="total-utilizadores" class="number">0</div>
+                    <div class="label">Usuários</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="restaurantes" class="dashboard-card">
+            <div class="card-header"><h3>Restaurantes Cadastrados</h3></div>
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead><tr><th>Nome do Restaurante</th><th>ID do Dono</th><th>Indicações Feitas</th><th>Ações</th></tr></thead>
+                    <tbody id="lista-restaurantes-body">
+                        <tr><td colspan="4" style="text-align: center;">Carregando dados...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="usuarios" class="dashboard-card">
+            <div class="card-header"><h3>Usuários da Plataforma</h3></div>
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead><tr><th>E-mail</th><th>Nome</th><th>Perfil (Role)</th><th>Ações</th></tr></thead>
+                    <tbody id="lista-utilizadores-body">
+                         <tr><td colspan="4" style="text-align: center;">Carregando dados...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="indicacoes" class="dashboard-card">
+            <div class="card-header"><h3>Relatório de Indicações</h3></div>
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead><tr><th>Novo Restaurante</th><th>Indicado Por</th><th>Ações</th></tr></thead>
+                    <tbody id="relatorio-indicacoes-body">
+                        <tr><td colspan="3" style="text-align: center;">Carregando dados...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+        <!-- Rodapé adicionado ao final do conteúdo principal -->
+        <footer class="page-footer">
+            <p>&copy; 2024 E-Pra-Já. Todos os direitos reservados.</p>
+        </footer>
+    </main>
+
+    <script type="module" src="admin.js"></script>
+</body>
+</html>
+

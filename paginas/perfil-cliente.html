@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - E-Pra-Já</title>
+
+    <!-- CSS (caminho corrigido) -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+
+    <!-- Ícones (Font Awesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+
+    <!-- Estilos específicos para esta página -->
+    <style>
+        .perfil-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: var(--cor-branco);
+            border-radius: var(--borda-radius);
+            box-shadow: var(--sombra-padrao);
+        }
+        .perfil-header {
+            text-align: center;
+            border-bottom: 1px solid var(--cor-cinza-claro);
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .pedido-card-historico {
+            border: 1px solid var(--cor-cinza-claro);
+            border-radius: var(--borda-radius);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .pedido-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .pedido-header span {
+            font-size: 0.9rem;
+            color: var(--cor-texto-suave);
+        }
+        .pedido-footer {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--cor-cinza-claro);
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CABEÇALHO GLOBAL -->
+    <div id="global-header-placeholder"></div>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="container">
+        <div class="perfil-container">
+            <div class="perfil-header">
+                <h2>Meu Perfil</h2>
+                <p>Olá, <strong id="nome-cliente">carregando...</strong> (<span id="email-cliente"></span>)</p>
+                <button id="btn-logout" class="btn">Sair</button>
+            </div>
+
+            <h3>Histórico de Pedidos</h3>
+            <div id="loading-indicator">
+                <p>Carregando seu histórico...</p>
+            </div>
+            <div id="historico-pedidos-lista">
+                <!-- Os pedidos do cliente serão inseridos aqui pelo perfil-cliente.js -->
+            </div>
+        </div>
+    </main>
+
+    <!-- RODAPÉ GLOBAL -->
+    <div id="global-footer-placeholder"></div>
+    
+    <!-- Scripts -->
+    <script type="module" src="../js/components.js"></script>
+    <script type="module" src="../js/perfil-cliente.js"></script>
+</body>
+</html>
+

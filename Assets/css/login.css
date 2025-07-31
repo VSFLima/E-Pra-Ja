@@ -1,0 +1,126 @@
+/* E-Pra-Já: Arquivo de Estilo para Login/Cadastro (login.css) */
+/* Localização: /assets/css/login.css */
+
+/* --- 1. Importação de Variáveis (Opcional, mas boa prática) --- */
+/* Este arquivo herda as variáveis do :root definidas em style.css */
+/* Não é necessário reimportar a fonte aqui. */
+
+/* --- 2. Estilo do Corpo da Página de Login --- */
+body.login-body {
+    background-color: var(--cor-fundo);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* --- 3. Container Principal --- */
+.login-container {
+    background-color: var(--cor-branco);
+    padding: 2.5rem 3rem;
+    border-radius: var(--borda-radius);
+    box-shadow: var(--sombra-padrao);
+    width: 100%;
+    max-width: 450px;
+    text-align: center;
+}
+
+.login-header .logo {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--cor-secundaria);
+    margin-bottom: 0.5rem;
+}
+
+.login-header .logo span {
+    color: var(--cor-primaria);
+}
+
+.login-header p {
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+/* --- 4. Formulário --- */
+.login-form .form-group {
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.login-form label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--cor-secundaria);
+}
+
+.login-form input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--cor-cinza-claro);
+    border-radius: var(--borda-radius);
+    font-size: 1rem;
+    transition: var(--transicao-padrao);
+}
+
+.login-form input:focus {
+    outline: none;
+    border-color: var(--cor-primaria);
+    box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.2);
+}
+
+/* Usando a classe .btn do style.css e adicionando largura total */
+.btn-full {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.1rem;
+    margin-top: 1rem;
+}
+
+/* --- 5. Links e Mensagens Adicionais --- */
+.login-footer {
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.login-footer a {
+    font-weight: 600;
+    color: var(--cor-primaria);
+}
+
+.login-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Mensagens de erro ou sucesso */
+.message {
+    padding: 10px;
+    margin-bottom: 1rem;
+    border-radius: var(--borda-radius);
+    display: none; /* Oculto por padrão, será exibido via JS */
+}
+
+.message.error {
+    background-color: #FEE2E2;
+    color: #C53030;
+    border: 1px solid #FCA5A5;
+}
+
+.message.success {
+    background-color: #C6F6D5;
+    color: #2F855A;
+    border: 1px solid #9AE6B4;
+}
+
+/* --- 6. Responsividade --- */
+@media (max-width: 480px) {
+    .login-container {
+        padding: 2rem 1.5rem;
+    }
+
+    .login-header .logo {
+        font-size: 2rem;
+    }
+}
+

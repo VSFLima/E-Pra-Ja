@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios - Painel do Restaurante</title>
+
+    <!-- CSS (caminhos corrigidos) -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/panel.css">
+
+    <!-- Ícones (Font Awesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+</head>
+<body class="panel-body">
+
+    <!-- BARRA LATERAL DE NAVEGAÇÃO -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="logo">
+                <img src="../assets/images/logo.svg" alt="Logo E-Pra Já">
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <!-- O link para index.html leva de volta ao painel principal -->
+                <li><a href="index.html"><i class="fa-solid fa-receipt icon"></i><span>Pedidos</span></a></li>
+                <li><a href="index.html#cardapio"><i class="fa-solid fa-book-open icon"></i><span>Cardápio</span></a></li>
+                <li><a href="index.html#entregadores"><i class="fa-solid fa-motorcycle icon"></i><span>Entregadores</span></a></li>
+                <!-- Link ativo para a página de relatórios -->
+                <li><a href="relatorios.html" class="active"><i class="fa-solid fa-chart-pie icon"></i><span>Relatórios</span></a></li>
+                <li><a href="index.html#config"><i class="fa-solid fa-store icon"></i><span>Minha Loja</span></a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+             <a href="#" id="btn-logout"><i class="fa-solid fa-right-from-bracket icon"></i><span>Sair</span></a>
+        </div>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="main-content">
+        <header class="page-header">
+            <h1>Relatórios de Desempenho</h1>
+        </header>
+
+        <!-- Indicador de Carregamento -->
+        <div id="loading-indicator">
+            <p>Gerando relatórios, por favor aguarde...</p>
+        </div>
+
+        <div id="relatorios-container">
+            <!-- Cartões de Métricas -->
+            <section class="metric-cards">
+                <div class="metric-card">
+                    <i class="fa-solid fa-dollar-sign icon"></i>
+                    <div class="info">
+                        <div id="total-vendas" class="number">R$ 0,00</div>
+                        <div class="label">Total de Vendas (Pedidos Entregues)</div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <i class="fa-solid fa-box-archive icon"></i>
+                    <div class="info">
+                        <div id="total-pedidos" class="number">0</div>
+                        <div class="label">Total de Pedidos</div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <i class="fa-solid fa-receipt icon"></i>
+                    <div class="info">
+                        <div id="ticket-medio" class="number">R$ 0,00</div>
+                        <div class="label">Ticket Médio</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Itens Mais Vendidos -->
+            <section class="dashboard-card">
+                <div class="card-header">
+                    <h3>Top 5 Itens Mais Vendidos</h3>
+                </div>
+                <ul id="itens-mais-vendidos-lista" style="list-style-type: none; padding: 0;">
+                    <!-- A lista será preenchida pelo relatorios.js -->
+                </ul>
+            </section>
+        </div>
+    </main>
+    
+    <!-- Script da Página de Relatórios -->
+    <script type="module" src="../js/relatorios.js"></script>
+</body>
+</html>
+

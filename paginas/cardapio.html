@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardápio Digital - E-Pra-Já</title>
+
+    <!-- CSS (caminho corrigido) -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+
+    <!-- Ícones (Font Awesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- CABEÇALHO GLOBAL (v3) -->
+    <div id="global-header-placeholder"></div>
+
+    <!-- CABEÇALHO DO RESTAURANTE -->
+    <header class="cardapio-header">
+        <div class="container">
+            <img id="logo-restaurante" class="logo-restaurante" src="https://placehold.co/100x100/E2E8F0/1A202C?text=L" alt="Logo do Restaurante">
+            <h1 id="nome-restaurante">Carregando nome...</h1>
+            <div id="status-loja" class="status-loja">Verificando...</div>
+        </div>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL DO CARDÁPIO -->
+    <main class="container secao" style="padding-top: 2rem;">
+        <div class="cardapio-layout">
+            
+            <!-- Coluna dos Itens do Menu -->
+            <div class="cardapio-items" id="lista-cardapio">
+                <!-- As categorias e itens serão inseridos aqui pelo cardapio.js -->
+                <p>Carregando cardápio...</p>
+            </div>
+
+            <!-- Coluna do Carrinho de Compras -->
+            <aside class="cardapio-carrinho">
+                <h3><i class="fa-solid fa-cart-shopping"></i> Meu Pedido</h3>
+                <div id="carrinho-itens">
+                    <p>Seu carrinho está vazio.</p>
+                </div>
+                <div class="carrinho-total" style="display: flex; justify-content: space-between; align-items: center;">
+                    <strong>Total:</strong>
+                    <span id="carrinho-total">R$ 0,00</span>
+                </div>
+                <button id="checkout-btn" class="btn btn-primario" style="width: 100%; margin-top: 1rem;" disabled>Finalizar Pedido</button>
+            </aside>
+
+        </div>
+    </main>
+    
+    <!-- MODAL DE CHECKOUT (inicialmente oculto) -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal-container">
+            <header class="modal-header">
+                <h3>Finalizar Pedido</h3>
+                <button class="btn-fechar-modal" id="fechar-modal-btn">&times;</button>
+            </header>
+            <form id="checkout-form" class="form-group">
+                <label for="nome">Seu Nome</label>
+                <input type="text" id="nome" name="nome" required>
+                
+                <label for="whatsapp">Seu WhatsApp (com DDD)</label>
+                <input type="tel" id="whatsapp" name="whatsapp" placeholder="Ex: 11987654321" required>
+                
+                <label for="endereco">Endereço Completo (Rua, Nº, Bairro, Cidade)</label>
+                <textarea id="endereco" name="endereco" rows="3" required></textarea>
+                
+                <label for="pagamento">Forma de Pagamento</label>
+                <select id="pagamento" name="pagamento" required style="width: 100%; padding: 12px; border: 1px solid var(--cor-cinza-claro); border-radius: var(--borda-radius); margin-bottom: 1rem;">
+                    <option value="Dinheiro">Dinheiro</option>
+                    <option value="Cartão de Crédito">Cartão de Crédito na Entrega</option>
+                    <option value="Cartão de Débito">Cartão de Débito na Entrega</option>
+                    <option value="Pix">Pix</option>
+                </select>
+                
+                <label for="troco">Precisa de troco para quanto? (se pagar em dinheiro)</label>
+                <input type="number" id="troco" name="troco" placeholder="Deixe em branco se não precisar">
+                
+                <button type="submit" class="btn btn-primario" style="width: 100%; margin-top: 1.5rem;">Confirmar Pedido</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- RODAPÉ GLOBAL (v3) -->
+    <div id="global-footer-placeholder"></div>
+
+    <!-- Scripts -->
+    <script type="module" src="../js/components.js"></script>
+    <script type="module" src="../js/cardapio.js"></script>
+</body>
+</html>
+
