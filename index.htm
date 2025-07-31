@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-Pra-Já - Sua plataforma de cardápio e pedidos online</title>
     
-    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- CSS com versionamento para forçar a atualização -->
+    <link rel="stylesheet" href="assets/css/style.css?v=4.0">
+
+    <!-- Ícones (Font Awesome) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
 </head>
 <body>
@@ -13,7 +16,7 @@
     <!-- CABEÇALHO GLOBAL -->
     <div id="global-header-placeholder"></div>
 
-    <main>
+    <main class="page-content">
         <!-- SEÇÃO PRINCIPAL (HERO) -->
         <section class="hero">
             <div class="container">
@@ -29,7 +32,6 @@
             <div class="container">
                 <h2>Simples de começar, fácil de usar</h2>
                 <p class="subtitulo">Em apenas 3 passos, você está pronto para receber pedidos e encantar seus clientes.</p>
-
                 <div class="como-funciona-step">
                     <div class="step-texto">
                         <span class="step-numero">PASSO 1</span>
@@ -38,7 +40,6 @@
                     </div>
                     <img src="https://placehold.co/500x350/E2E8F0/1A202C?text=Tela+de+Gestão+de+Cardápio" alt="Ilustração da gestão de cardápio" class="step-imagem">
                 </div>
-
                 <div class="como-funciona-step">
                     <img src="https://placehold.co/500x350/E2E8F0/1A202C?text=Link+Exclusivo+no+Instagram" alt="Ilustração do link do cardápio" class="step-imagem">
                     <div class="step-texto">
@@ -47,7 +48,6 @@
                         <p>Você recebe um link único para colocar na bio do Instagram, no status do WhatsApp ou onde mais desejar. Seus clientes acessam e pedem sem precisar baixar nenhum aplicativo.</p>
                     </div>
                 </div>
-
                 <div class="como-funciona-step">
                     <div class="step-texto">
                         <span class="step-numero">PASSO 3</span>
@@ -59,7 +59,7 @@
             </div>
         </section>
 
-        <!-- SEÇÃO DE PREÇOS (NOVA) -->
+        <!-- SEÇÃO DE PREÇOS -->
         <section id="precos" class="secao">
             <div class="container">
                 <h2>Planos transparentes, sem surpresas</h2>
@@ -105,9 +105,9 @@
     <!-- RODAPÉ GLOBAL -->
     <div id="global-footer-placeholder"></div>
 
-    <!-- Scripts -->
-    <script type="module" src="js/components.js"></script>
-    <script type="module" src="js/main.js"></script>
+    <!-- Scripts com versionamento para forçar a atualização -->
+    <script type="module" src="js/components.js?v=4.0"></script>
+    <script type="module" src="js/main.js?v=4.0"></script>
 </body>
 </html>
 
