@@ -13,8 +13,8 @@
     <!-- CABEÇALHO GLOBAL -->
     <div id="global-header-placeholder"></div>
 
-    <main class="login-main-content">
-        <div class="login-container" style="max-width: 600px;"> <!-- Aumentei o tamanho para o novo formulário -->
+    <main class="page-content login-main-content">
+        <div class="login-container cadastro-restaurante"> <!-- Classe para aumentar o tamanho -->
             <header class="login-header">
                 <a href="/" class="logo">
                     <img src="../assets/images/logo.svg" alt="Logo E-Pra Já">
@@ -24,30 +24,28 @@
 
             <div id="message-container" class="message"></div>
 
-            <form id="cadastro-form" style="text-align: left;">
+            <form id="cadastro-form">
                 
-                <h4 style="margin-top: 1.5rem; margin-bottom: 1rem; border-bottom: 1px solid var(--cor-cinza-claro); padding-bottom: 0.5rem;">Informações do Responsável</h4>
-                
-                <div class="form-group" style="margin-bottom: 1rem;">
+                <h4 class="form-titulo-secao">Informações do Responsável</h4>
+                <div class="form-group">
                     <label for="nome-responsavel">Seu Nome Completo</label>
                     <input type="text" id="nome-responsavel" name="nome-responsavel" required>
                 </div>
-                <div class="form-group" style="margin-bottom: 1rem;">
+                <div class="form-group">
                     <label for="cpf">Seu CPF</label>
                     <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" required>
                 </div>
 
-                <h4 style="margin-top: 1.5rem; margin-bottom: 1rem; border-bottom: 1px solid var(--cor-cinza-claro); padding-bottom: 0.5rem;">Informações do Restaurante</h4>
-
-                <div class="form-group" style="margin-bottom: 1rem;">
+                <h4 class="form-titulo-secao">Informações do Restaurante</h4>
+                <div class="form-group">
                     <label for="nome-restaurante">Nome do Restaurante</label>
                     <input type="text" id="nome-restaurante" name="nome-restaurante" required>
                 </div>
-                 <div class="form-group" style="margin-bottom: 1rem;">
+                 <div class="form-group">
                     <label for="endereco">Endereço Completo do Restaurante</label>
                     <input type="text" id="endereco" name="endereco" placeholder="Rua, Nº, Bairro, Cidade - Estado" required>
                 </div>
-                <div class="form-group" style="margin-bottom: 1rem;">
+                <div class="form-group">
                     <label>Possui CNPJ?</label>
                     <div style="display: flex; gap: 1rem;">
                         <label><input type="radio" name="possuiCnpj" value="nao" checked> Não</label>
@@ -57,23 +55,22 @@
 
                 <!-- Seção Condicional para CNPJ -->
                 <div id="cnpj-section" style="display: none;">
-                    <div class="form-group" style="margin-bottom: 1rem;">
+                    <div class="form-group">
                         <label for="nome-empresa">Nome da Empresa (Razão Social)</label>
                         <input type="text" id="nome-empresa" name="nome-empresa">
                     </div>
-                    <div class="form-group" style="margin-bottom: 1rem;">
+                    <div class="form-group">
                         <label for="cnpj">Número do CNPJ</label>
                         <input type="text" id="cnpj" name="cnpj" placeholder="00.000.000/0001-00">
                     </div>
                 </div>
 
-                <h4 style="margin-top: 1.5rem; margin-bottom: 1rem; border-bottom: 1px solid var(--cor-cinza-claro); padding-bottom: 0.5rem;">Informações de Acesso</h4>
-
-                <div class="form-group" style="margin-bottom: 1rem;">
+                <h4 class="form-titulo-secao">Informações de Acesso</h4>
+                <div class="form-group">
                     <label for="email">Seu melhor E-mail (será o seu login)</label>
                     <input type="email" id="email" name="email" required>
                 </div>
-                <div class="form-group" style="margin-bottom: 1rem;">
+                <div class="form-group">
                     <label for="password">Crie uma Senha (mínimo 6 caracteres)</label>
                     <input type="password" id="password" name="password" required minlength="6">
                 </div>

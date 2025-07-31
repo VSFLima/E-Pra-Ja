@@ -7,56 +7,11 @@
 
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/panel.css">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
-    
-    <!-- CSS CORRIGIDO PARA O LAYOUT -->
-    <style>
-        /* Garante que o layout ocupe a altura total e remove margens padrão */
-        html, body.panel-body {
-            height: 100%;
-            margin: 0;
-            overflow-x: hidden; /* Previne scroll horizontal */
-        }
-
-        /* Aplica Flexbox ao corpo para alinhar a sidebar e o conteúdo principal */
-        .panel-body {
-            display: flex;
-        }
-
-        /* Define uma largura fixa para a sidebar e garante que ela não encolha */
-        .sidebar {
-            flex-shrink: 0; 
-            /* A largura exata deve ser a mesma definida no seu arquivo panel.css */
-            /* Exemplo: width: 250px; */
-        }
-
-        /* Faz o conteúdo principal ocupar todo o espaço restante */
-        .main-content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column; /* Organiza o conteúdo principal em coluna */
-            height: 100vh; /* Ocupa a altura total da tela */
-            overflow-y: auto; /* Adiciona scroll apenas no conteúdo principal */
-        }
-        
-        /* Garante que as seções dentro do main-content ocupem o espaço necessário */
-        .main-content > section {
-            flex-shrink: 0;
-        }
-
-        /* Estilo para o novo rodapé do painel */
-        .page-footer {
-            text-align: center;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-top: 1px solid #dee2e6;
-            margin-top: auto; /* Empurra o rodapé para o final do container flex */
-        }
-    </style>
 </head>
 <body class="panel-body">
 
+    <!-- BARRA LATERAL DE NAVEGAÇÃO -->
     <aside class="sidebar">
         <div class="sidebar-header">
             <a href="index.html" class="logo">
@@ -68,7 +23,7 @@
                 <li><a href="#dashboard" class="active"><i class="fa-solid fa-chart-line icon"></i><span>Dashboard</span></a></li>
                 <li><a href="#restaurantes"><i class="fa-solid fa-store icon"></i><span>Restaurantes</span></a></li>
                 <li><a href="#usuarios"><i class="fa-solid fa-users icon"></i><span>Usuários</span></a></li>
-                <li><a href="#indicacoes"><i class="fa-solid fa-gift icon"></i><span>Indicações</span></a></li>
+                <li><a href="enviar-mensagem.html"><i class="fa-solid fa-paper-plane icon"></i><span>Mensagens</span></a></li>
             </ul>
         </nav>
         <div class="sidebar-footer">
@@ -76,71 +31,89 @@
         </div>
     </aside>
 
+    <!-- CONTEÚDO PRINCIPAL -->
     <main class="main-content">
         <header class="page-header">
             <h1>Dashboard do Gestor</h1>
-            <p>Bem-vindo, <strong id="nome-utilizador">admin</strong>. Visão geral da plataforma.</p>
+            <p>Bem-vindo, <strong id="nome-utilizador">admin</strong>.</p>
         </header>
 
+        <!-- DASHBOARD FINANCEIRO (v4) -->
         <section id="dashboard" class="metric-cards">
             <div class="metric-card">
-                <i class="fa-solid fa-store icon"></i>
+                <i class="fa-solid fa-dollar-sign icon"></i>
                 <div class="info">
-                    <div id="total-restaurantes" class="number">0</div>
-                    <div class="label">Restaurantes</div>
+                    <div id="total-arrecadado" class="number">R$ 0,00</div>
+                    <div class="label">Total Arrecadado (Mês)</div>
                 </div>
             </div>
             <div class="metric-card">
-                <i class="fa-solid fa-users icon"></i>
+                <i class="fa-solid fa-clock-rotate-left icon"></i>
                 <div class="info">
-                    <div id="total-utilizadores" class="number">0</div>
-                    <div class="label">Usuários</div>
+                    <div id="total-pendente" class="number">R$ 0,00</div>
+                    <div class="label">Total Pendente</div>
+                </div>
+            </div>
+            <div class="metric-card">
+                <i class="fa-solid fa-hourglass-start icon"></i>
+                <div class="info">
+                    <div id="total-em-teste" class="number">R$ 0,00</div>
+                    <div class="label">Potencial (Em Teste)</div>
                 </div>
             </div>
         </section>
 
+        <!-- CONTROLE FINANCEIRO (v4) -->
+        <section class="dashboard-card">
+            <div class="card-header"><h3>Controle Financeiro</h3></div>
+            <div class="management-form">
+                <div style="grid-column: 1 / -1;">
+                    <h4>Solicitações de Desbloqueio por Confiança</h4>
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead><tr><th>Restaurante</th><th>ID do Dono</th><th>Ação</th></tr></thead>
+                            <tbody id="desbloqueio-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div style="grid-column: 1 / -1;">
+                    <h4>Restaurantes com Pagamento Pendente</h4>
+                     <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead><tr><th>Restaurante</th><th>Acesso Válido Até</th></tr></thead>
+                            <tbody id="pendentes-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GESTÃO DE RESTAURANTES (v4) -->
         <section id="restaurantes" class="dashboard-card">
-            <div class="card-header"><h3>Restaurantes Cadastrados</h3></div>
+            <div class="card-header">
+                <h3>Gerenciar Restaurantes</h3>
+                <a href="gerenciar-restaurante.html" class="btn btn-primario">Criar Novo Restaurante</a>
+            </div>
             <div class="table-wrapper">
                 <table class="data-table">
-                    <thead><tr><th>Nome do Restaurante</th><th>ID do Dono</th><th>Indicações Feitas</th><th>Ações</th></tr></thead>
-                    <tbody id="lista-restaurantes-body">
-                        <tr><td colspan="4" style="text-align: center;">Carregando dados...</td></tr>
-                    </tbody>
+                    <thead><tr><th>Nome</th><th>Status</th><th>Pagamento</th><th>Ações</th></tr></thead>
+                    <tbody id="lista-restaurantes-body"></tbody>
                 </table>
             </div>
         </section>
 
+        <!-- GESTÃO DE USUÁRIOS (v4) -->
         <section id="usuarios" class="dashboard-card">
-            <div class="card-header"><h3>Usuários da Plataforma</h3></div>
+            <div class="card-header"><h3>Gerenciar Usuários</h3></div>
             <div class="table-wrapper">
                 <table class="data-table">
-                    <thead><tr><th>E-mail</th><th>Nome</th><th>Perfil (Role)</th><th>Ações</th></tr></thead>
-                    <tbody id="lista-utilizadores-body">
-                         <tr><td colspan="4" style="text-align: center;">Carregando dados...</td></tr>
-                    </tbody>
+                    <thead><tr><th>E-mail</th><th>Nome</th><th>Perfil</th><th>Status</th><th>Ações</th></tr></thead>
+                    <tbody id="lista-utilizadores-body"></tbody>
                 </table>
             </div>
         </section>
-
-        <section id="indicacoes" class="dashboard-card">
-            <div class="card-header"><h3>Relatório de Indicações</h3></div>
-            <div class="table-wrapper">
-                <table class="data-table">
-                    <thead><tr><th>Novo Restaurante</th><th>Indicado Por</th><th>Ações</th></tr></thead>
-                    <tbody id="relatorio-indicacoes-body">
-                        <tr><td colspan="3" style="text-align: center;">Carregando dados...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-        
-        <!-- Rodapé adicionado ao final do conteúdo principal -->
-        <footer class="page-footer">
-            <p>&copy; 2024 E-Pra-Já. Todos os direitos reservados.</p>
-        </footer>
     </main>
-
+    
     <script type="module" src="admin.js"></script>
 </body>
 </html>

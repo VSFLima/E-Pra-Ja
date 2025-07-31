@@ -1,16 +1,16 @@
-/* E-Pra-Já v3: Arquivo de Estilo para Painéis (panel.css) */
+/* E-Pra-Já v4: Arquivo de Estilo para Painéis (panel.css) */
 /* Localização: /assets/css/panel.css */
+/* Este arquivo herda as variáveis de cor do style.css */
 
 /* --- 1. Estrutura Geral do Painel --- */
-/* As variáveis de cor são herdadas do style.css */
 body.panel-body {
-    background-color: var(--cor-fundo);
+    background-color: var(--cor-fundo-alternativa);
     display: flex;
 }
 
 .sidebar {
     width: 260px;
-    background-color: var(--cor-secundaria); /* Agora Preto Forte */
+    background-color: var(--cor-secundaria); /* Preto Forte */
     color: var(--cor-branco);
     padding: 2rem 1rem;
     height: 100vh;
@@ -29,8 +29,19 @@ body.panel-body {
 }
 
 /* --- 2. Estilos da Sidebar --- */
-.sidebar-header .logo img { height: 35px; margin: 0 auto; }
-.sidebar-nav ul { list-style: none; padding: 0; flex-grow: 1; margin-top: 2.5rem; }
+.sidebar-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+.sidebar-header .logo img {
+    height: 35px;
+    filter: brightness(0) invert(1);
+}
+.sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+    flex-grow: 1;
+}
 .sidebar-nav li a {
     display: flex;
     align-items: center;
@@ -42,11 +53,19 @@ body.panel-body {
 }
 .sidebar-nav li a:hover,
 .sidebar-nav li a.active {
-    background-color: rgba(107, 70, 193, 0.2); /* Roxo com transparência */
+    background-color: var(--cor-primaria); /* Roxo */
     color: var(--cor-branco);
 }
-.sidebar-nav li a .icon { margin-right: 1rem; font-size: 1.2rem; width: 20px; text-align: center; }
-.sidebar-footer { padding-top: 1rem; border-top: 1px solid #4A5568; }
+.sidebar-nav li a .icon {
+    margin-right: 1rem;
+    font-size: 1.2rem;
+    width: 20px;
+    text-align: center;
+}
+.sidebar-footer {
+    padding-top: 1rem;
+    border-top: 1px solid #4A5568;
+}
 
 /* --- 3. Estilos do Conteúdo Principal --- */
 .page-header {
@@ -56,9 +75,11 @@ body.panel-body {
     align-items: center;
     flex-wrap: wrap;
 }
-.page-header h1 { color: var(--cor-secundaria); }
+.page-header h1 {
+    color: var(--cor-secundaria);
+}
 
-/* --- 4. Componentes do Painel --- */
+/* --- 4. Componentes do Painel: Cards e Tabelas --- */
 .dashboard-card {
     background-color: var(--cor-branco);
     padding: 1.5rem;
@@ -74,45 +95,133 @@ body.panel-body {
     padding-bottom: 1rem;
     margin-bottom: 1rem;
 }
-.card-header h3 { margin: 0; font-size: 1.25rem; }
-
-/* Tabelas */
 .table-wrapper { overflow-x: auto; }
-.data-table { width: 100%; border-collapse: collapse; text-align: left; }
-.data-table th, .data-table td { padding: 1rem; border-bottom: 1px solid var(--cor-cinza-claro); vertical-align: middle; }
-.data-table th { font-weight: 600; background-color: #f8f9fa; }
-.data-table tbody tr:hover { background-color: #f1f3f5; }
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+.data-table th,
+.data-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--cor-cinza-claro);
+    vertical-align: middle;
+}
+.status {
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+.status.ativo, .status.pago { background-color: #F0FFF4; color: #38A169; }
+.status.inativo, .status.pendente, .status.bloqueado { background-color: #FFF5F5; color: #C53030; }
+.status.teste { background-color: #FEFCBF; color: #744210; }
 
-/* Status Tags */
-.status { padding: 5px 10px; border-radius: 15px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; white-space: nowrap; }
-.status.recebido { background-color: #FEFCBF; color: #744210; }
-.status.em-preparacao { background-color: #BEE3F8; color: #2A4365; }
-.status.saiu-para-entrega { background-color: #B2F5EA; color: #234E52; }
-.status.entregue { background-color: #C6F6D5; color: #22543D; }
+/* --- 5. (NOVO v4) Pop-up de Cobrança --- */
+.billing-popup-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(26, 32, 44, 0.8); /* Preto com transparência */
+    display: none; /* Oculto por padrão */
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
+    backdrop-filter: blur(5px);
+}
+.billing-popup-overlay.visible {
+    display: flex;
+}
+.billing-popup-container {
+    background-color: var(--cor-branco);
+    padding: 2.5rem;
+    border-radius: var(--borda-radius);
+    box-shadow: var(--sombra-media);
+    width: 90%;
+    max-width: 550px;
+    text-align: center;
+    animation: fadeIn 0.3s ease-out;
+}
+.billing-popup-container h2 {
+    color: var(--cor-erro);
+    font-size: 1.8rem;
+}
+.billing-popup-container .pix-info {
+    background-color: var(--cor-fundo-alternativa);
+    padding: 1rem;
+    margin: 1.5rem 0;
+    border-radius: var(--borda-radius);
+    border: 1px solid var(--cor-cinza-claro);
+}
+.billing-popup-container .pix-info strong {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+.billing-popup-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
 
-/* Botão de Status da Loja */
-.switch { position: relative; display: inline-block; width: 60px; height: 34px; }
-.switch input { display: none; }
-.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--cor-erro); transition: .4s; border-radius: 34px; }
-.slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
-input:checked + .slider { background-color: var(--cor-sucesso); }
-input:checked + .slider:before { transform: translateX(26px); }
-
-/* Formulários de Gestão */
-.management-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
+/* --- 6. Outros Componentes --- */
+.management-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
 .form-group { display: flex; flex-direction: column; }
 .form-group label { margin-bottom: 0.5rem; font-weight: 500; }
-.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--cor-cinza-claro); border-radius: var(--borda-radius); font-size: 1rem; }
+.form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--cor-cinza-claro);
+    border-radius: var(--borda-radius);
+    font-size: 1rem;
+}
+.form-titulo-secao {
+    margin-top: 1.5rem; margin-bottom: 1rem; border-bottom: 1px solid var(--cor-cinza-claro);
+    padding-bottom: 0.5rem; font-size: 1.1rem; font-weight: 600;
+}
 
-/* Cartões de Métrica (Painel Admin) */
-.metric-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-.metric-card { background-color: var(--cor-branco); padding: 1.5rem; border-radius: var(--borda-radius); box-shadow: var(--sombra-padrao); display: flex; align-items: center; }
-.metric-card .icon { font-size: 2.5rem; margin-right: 1.5rem; padding: 1rem; border-radius: 50%; color: var(--cor-primaria); background-color: #E9D8FD; } /* Fundo Roxo Claro */
-.metric-card .info .number { font-size: 2rem; font-weight: 700; line-height: 1; }
+.metric-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+.metric-card {
+    background-color: var(--cor-branco);
+    padding: 1.5rem;
+    border-radius: var(--borda-radius);
+    box-shadow: var(--sombra-padrao);
+    display: flex;
+    align-items: center;
+}
+.metric-card .icon {
+    font-size: 2.5rem;
+    margin-right: 1.5rem;
+    padding: 1rem;
+    border-radius: 50%;
+    color: var(--cor-primaria); /* Roxo */
+    background-color: #E9D8FD; /* Roxo claro */
+}
+.metric-card .info .number { font-size: 2rem; font-weight: 700; }
 .metric-card .info .label { font-size: 1rem; color: var(--cor-texto-suave); }
 
-/* Painel do Entregador */
-.entregador-actions { display: flex; gap: 1rem; margin-top: 1rem; }
-.btn-mapa { background-color: #4285F4; color: white; }
-.btn-whatsapp { background-color: #25D366; color: white; }
+/* --- 7. Responsividade --- */
+@media (max-width: 992px) {
+    .sidebar { width: 70px; }
+    .sidebar-header .logo, .sidebar-nav span { display: none; }
+    .sidebar-nav li a { justify-content: center; }
+    .sidebar-nav li a .icon { margin-right: 0; font-size: 1.5rem; }
+    .main-content { margin-left: 70px; width: calc(100% - 70px); }
+}
+@media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); z-index: 2000; }
+    .main-content { margin-left: 0; width: 100%; padding: 1rem; }
+    .page-header { flex-direction: column; align-items: flex-start; }
+}
 

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel do Restaurante - E-Pra-Já</title>
 
-    <!-- CSS (caminhos corrigidos) -->
+    <!-- CSS -->
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/panel.css">
 
@@ -51,7 +51,7 @@
             </div>
         </header>
 
-        <!-- SEÇÃO DE PEDIDOS -->
+        <!-- SEÇÃO DE PEDIDOS (COMPLETA) -->
         <section id="pedidos" class="dashboard-card">
             <div class="card-header"><h3>Pedidos Recebidos</h3></div>
             <div class="table-wrapper">
@@ -68,10 +68,10 @@
             </div>
         </section>
 
-        <!-- SEÇÃO DE GESTÃO DE CARDÁPIO -->
+        <!-- SEÇÃO DE GESTÃO DE CARDÁPIO (COMPLETA) -->
         <section id="cardapio" class="dashboard-card">
             <div class="card-header"><h3>Gestão de Cardápio</h3></div>
-            <h4 id="form-cardapio-title">Adicionar Novo Item</h4>
+            <h4 id="form-cardapio-title" class="form-titulo-secao">Adicionar Novo Item</h4>
             <form id="form-cardapio" class="management-form">
                 <input type="hidden" id="item-id">
                 <div class="form-group"><label for="nome">Nome do Item</label><input type="text" id="nome" name="nome" required></div>
@@ -83,7 +83,7 @@
                 <div class="form-group" style="grid-column: 1 / -1;"><button type="submit" class="btn btn-primario">Salvar Item</button></div>
             </form>
             <hr style="margin: 2rem 0;">
-            <h4>Itens Cadastrados</h4>
+            <h4 class="form-titulo-secao">Itens Cadastrados</h4>
             <div class="table-wrapper">
                 <table class="data-table">
                     <thead><tr><th>Foto</th><th>Nome</th><th>Preço</th><th>Disponível?</th><th>Ações</th></tr></thead>
@@ -92,10 +92,10 @@
             </div>
         </section>
 
-        <!-- SEÇÃO DE GESTÃO DE ENTREGADORES -->
+        <!-- SEÇÃO DE GESTÃO DE ENTREGADORES (COMPLETA) -->
         <section id="entregadores" class="dashboard-card">
              <div class="card-header"><h3>Gestão de Entregadores</h3></div>
-             <h4>Cadastrar Novo Entregador</h4>
+             <h4 class="form-titulo-secao">Cadastrar Novo Entregador</h4>
              <form id="form-entregador" class="management-form">
                 <div class="form-group"><label for="nomeEntregador">Nome Completo</label><input type="text" id="nomeEntregador" required></div>
                 <div class="form-group"><label for="emailEntregador">E-mail (será o login)</label><input type="email" id="emailEntregador" required></div>
@@ -103,7 +103,7 @@
                 <div class="form-group" style="align-self: flex-end;"><button type="submit" class="btn btn-primario">Cadastrar Entregador</button></div>
              </form>
              <hr style="margin: 2rem 0;">
-             <h4>Entregadores Cadastrados</h4>
+             <h4 class="form-titulo-secao">Entregadores Cadastrados</h4>
              <ul id="lista-entregadores" style="list-style-type: none; padding: 0;"></ul>
         </section>
 
@@ -114,19 +114,49 @@
         <div class="modal-container">
             <header class="modal-header">
                 <h3>Atribuir Pedido</h3>
-                <button id="fechar-modal-btn" class="btn-fechar-modal">&times;</button>
+                <button id="fechar-modal-atribuir-btn" class="btn-fechar-modal">&times;</button>
             </header>
             <form id="form-atribuir">
                 <div class="form-group">
                     <label for="select-entregador">Selecione o entregador disponível</label>
                     <select id="select-entregador" required></select>
                 </div>
-                <button type="submit" class="btn btn-primario" style="width: 100%; margin-top: 1rem;">Confirmar e Notificar</button>
+                <button type="submit" class="btn btn-primario" style="width: 100%; margin-top: 1rem;">Confirmar e Atribuir</button>
             </form>
         </div>
     </div>
 
-    <!-- Script do Painel (caminho relativo) -->
+    <!-- POP-UP DE COBRANÇA (v4) -->
+    <div class="billing-popup-overlay" id="billing-popup">
+        <div class="billing-popup-container">
+            <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: var(--cor-erro); margin-bottom: 1rem;"></i>
+            <h2>Acesso Suspenso</h2>
+            <p>Sua assinatura ou período de teste expirou. Para continuar recebendo pedidos, por favor, realize o pagamento da mensalidade.</p>
+            <div class="pix-info">
+                <strong>Pague com PIX para liberar o acesso</strong>
+                <p>Use a chave aleatória abaixo ou aponte a câmera para o QR Code.</p>
+                <p style="font-weight: 700; margin: 1rem 0;">Chave PIX: 3afebaa1-b6f7-41ca-a7be-e349293032c1</p>
+            </div>
+            <div class="billing-popup-actions">
+                <button id="btn-ja-paguei" class="btn btn-primario">Já paguei, liberar meu acesso por confiança</button>
+                <a id="link-enviar-comprovante" href="https://wa.me/5521979088829?text=Ol%C3%A1%21%20Estou%20enviando%20o%20comprovante%20de%20pagamento%20da%20minha%20mensalidade." target="_blank" class="btn" style="background-color: #25D366; color: white; display: none;">
+                    <i class="fab fa-whatsapp"></i> Enviar Comprovante
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- POP-UP DE MENSAGEM DO GESTOR (v4) -->
+    <div class="billing-popup-overlay" id="manager-message-popup">
+        <div class="billing-popup-container">
+            <i class="fas fa-info-circle" style="font-size: 3rem; color: var(--cor-primaria); margin-bottom: 1rem;"></i>
+            <h2>Mensagem do Gestor</h2>
+            <p id="manager-message-text" style="margin: 1.5rem 0; font-size: 1.1rem;"></p>
+            <button id="btn-fechar-mensagem" class="btn btn-primario">Entendi</button>
+        </div>
+    </div>
+
+    <!-- Script do Painel -->
     <script type="module" src="restaurante.js"></script>
 </body>
 </html>

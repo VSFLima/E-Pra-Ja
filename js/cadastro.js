@@ -1,10 +1,10 @@
-/* E-Pra-Já v3: Script da Página de Cadastro de Restaurante (cadastro.js) */
+/* E-Pra-Já v4: Script da Página de Cadastro de Restaurante (cadastro.js) */
 /* Localização: /js/cadastro.js */
 
 // --- 1. IMPORTAÇÕES ---
 import { auth, db } from '../firebase-config.js';
 import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
-import { doc, setDoc, addDoc, collection, Timestamp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+import { doc, setDoc, collection, Timestamp, writeBatch } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
 
 // --- 2. ELEMENTOS DO DOM ---
 const cadastroForm = document.getElementById('cadastro-form');
@@ -62,7 +62,8 @@ cadastroForm.addEventListener('submit', async (e) => {
             email: user.email,
             nome: nomeResponsavel,
             cpf: cpf,
-            role: "restaurante"
+            role: "restaurante",
+            status: "ativo" // Novo usuário começa ativo
         };
 
         // Calcula a data de término do período de teste (7 dias a partir de agora)
@@ -76,8 +77,10 @@ cadastroForm.addEventListener('submit', async (e) => {
             possuiCnpj: possuiCnpj,
             cnpj: possuiCnpj ? cadastroForm['cnpj'].value : null,
             nomeEmpresa: possuiCnpj ? cadastroForm['nome-empresa'].value : null,
-            trialEndDate: Timestamp.fromDate(trialEndDate),
-            lojaAberta: false,
+            accessValidUntil: Timestamp.fromDate(trialEndDate), // Novo campo chave
+            status: "teste", // Começa em período de teste
+            statusPagamento: "pendente", // Pagamento fica pendente após o teste
+            solicitouDesbloqueio: false,
             info: { telefone: "", horarios: "", logoUrl: "" },
         };
 
@@ -87,7 +90,8 @@ cadastroForm.addEventListener('submit', async (e) => {
         const userDocRef = doc(db, "utilizadores", user.uid);
         batch.set(userDocRef, dadosUsuario);
 
-        const restauranteDocRef = doc(collection(db, "restaurantes")); // Cria um novo documento com ID aleatório
+        // O nome do documento do restaurante será o mesmo UID do dono para facilitar a busca
+        const restauranteDocRef = doc(db, "restaurantes", user.uid);
         batch.set(restauranteDocRef, dadosRestaurante);
 
         await batch.commit();

@@ -1,95 +1,130 @@
-/* E-Pra-Já v3: Serviço de Interação com o Firestore (firestore.js) */
+/* E-Pra-Já v4: Serviço de Interação com o Firestore (firestore.js) */
 /* Localização: /js/services/firestore.js */
 
 // --- 1. IMPORTAÇÕES ---
-import { db, auth } from '../firebase-config.js';
+import { db } from './firebase-config.js';
 import {
   doc, getDoc, getDocs, collection, addDoc, updateDoc, deleteDoc,
-  query, where, onSnapshot, setDoc
+  query, where, onSnapshot, setDoc, Timestamp, writeBatch
 } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
 
 // --- 2. FUNÇÕES DE LEITURA (GET) ---
+
+export const getRestauranteById = async (id) => {
+    try {
+        const docRef = doc(db, "restaurantes", id);
+        const docSnap = await getDoc(docRef);
+        return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null;
+    } catch (error) { console.error("Erro ao buscar restaurante:", error); throw error; }
+};
 
 export const getTodosRestaurantes = async () => {
     try {
         const querySnapshot = await getDocs(collection(db, "restaurantes"));
         return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    } catch (error) { console.error("Erro ao buscar restaurantes:", error); throw error; }
+    } catch (error) { console.error("Erro ao buscar todos os restaurantes:", error); throw error; }
 };
 
 export const getTodosUtilizadores = async () => {
     try {
         const querySnapshot = await getDocs(collection(db, "utilizadores"));
         return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    } catch (error) { console.error("Erro ao buscar utilizadores:", error); throw error; }
+    } catch (error) { console.error("Erro ao buscar todos os utilizadores:", error); throw error; }
 };
 
-// --- 3. FUNÇÕES DE ESCRITA E MANIPULAÇÃO (CRUD) ---
+// --- 3. FUNÇÕES DE GESTÃO DE RESTAURANTES (ADMIN) ---
 
-/**
- * (v3) Cria um novo usuário para um entregador.
- * IMPORTANTE: A criação de usuários no Auth a partir do cliente é uma simplificação para a v3.
- * A solução ideal e 100% segura para produção em larga escala é usar uma Cloud Function.
- */
-export const criarUsuarioEntregador = async (email, senha, nome, restauranteId) => {
-    // Simulação para a v3 sem Cloud Functions:
-    // Esta abordagem requer que o GESTOR crie manualmente o login no painel do Firebase Auth.
+export const criarRestaurantePeloAdmin = async (dadosRestaurante, dadosUsuario) => {
+    // ... (Lógica para criar restaurante, requer criação manual do Auth)
+};
+
+export const atualizarRestaurantePeloAdmin = async (restauranteId, donoId, dadosRestaurante, dadosUsuario) => {
     try {
-        const userDocRef = doc(collection(db, "utilizadores")); // Cria um ID aleatório
-        await setDoc(userDocRef, {
-            email: email,
-            nome: nome,
-            role: "entregador",
-            restauranteId: restauranteId
-        });
-        console.log(`Documento do entregador ${nome} criado. Lembre-se de criar o login para ${email} no painel do Firebase Auth.`);
-    } catch (error) { console.error("Erro ao criar usuário entregador:", error); throw error; }
+        const batch = writeBatch(db);
+        batch.update(doc(db, "restaurantes", restauranteId), dadosRestaurante);
+        if (donoId) {
+            batch.update(doc(db, "utilizadores", donoId), dadosUsuario);
+        }
+        await batch.commit();
+    } catch (error) { console.error("Erro ao atualizar restaurante:", error); throw error; }
 };
 
-/**
- * (v3) Apaga o documento de um usuário no Firestore.
- * IMPORTANTE: A exclusão do usuário no Firebase Auth deve ser feita manualmente pelo gestor.
- */
+export const atualizarStatusRestaurante = async (restauranteId, novoStatus) => {
+    try {
+        await updateDoc(doc(db, "restaurantes", restauranteId), { status: novoStatus });
+    } catch (error) { console.error("Erro ao atualizar status do restaurante:", error); throw error; }
+};
+
+export const apagarRestauranteCompleto = async (restauranteId) => {
+    // IMPORTANTE: Esta função apaga apenas o documento principal.
+    // Subcoleções (cardapio, pedidos) e imagens precisam ser apagadas via Cloud Function para uma limpeza completa.
+    try {
+        await deleteDoc(doc(db, "restaurantes", restauranteId));
+    } catch (error) { console.error("Erro ao apagar restaurante:", error); throw error; }
+};
+
+// --- 4. FUNÇÕES DE GESTÃO DE USUÁRIOS ---
+
+export const criarUsuarioEntregador = async (email, senha, nome, restauranteId) => {
+    // IMPORTANTE: Requer a criação manual do login no Firebase Auth pelo gestor.
+    try {
+        const userDocRef = doc(collection(db, "utilizadores"));
+        await setDoc(userDocRef, {
+            email: email, nome: nome, role: "entregador",
+            status: "ativo", restauranteId: restauranteId
+        });
+    } catch (error) { console.error("Erro ao criar entregador:", error); throw error; }
+};
+
 export const apagarUsuarioCompleto = async (userId) => {
+    // IMPORTANTE: A exclusão do usuário no Firebase Auth deve ser feita manualmente.
     try {
         await deleteDoc(doc(db, "utilizadores", userId));
-        console.log(`Documento do usuário ${userId} apagado. Lembre-se de apagar o usuário no painel do Firebase Auth.`);
     } catch (error) { console.error("Erro ao apagar usuário:", error); throw error; }
 };
 
-/**
- * (NOVA FUNÇÃO v3) Salva uma cópia de um pedido no histórico do cliente.
- * @param {string} userId - O ID do cliente que fez o pedido.
- * @param {object} dadosPedido - O objeto completo do pedido.
- * @param {string} nomeRestaurante - O nome do restaurante onde o pedido foi feito.
- */
-export const salvarPedidoNoHistoricoCliente = async (userId, dadosPedido, nomeRestaurante) => {
-    if (!userId) return; // Não salva histórico para clientes não logados
+export const atualizarStatusUsuario = async (userId, novoStatus) => {
     try {
-        const historicoRef = collection(db, "utilizadores", userId, "historicoPedidos");
-        // Cria uma cópia simplificada para o histórico
-        const pedidoHistorico = {
-            ...dadosPedido,
-            nomeRestaurante: nomeRestaurante
-        };
-        await addDoc(historicoRef, pedidoHistorico);
-    } catch (error) {
-        console.error("Erro ao salvar pedido no histórico do cliente:", error);
-        // Não lançamos o erro para não interromper o fluxo de checkout do restaurante.
-    }
+        await updateDoc(doc(db, "utilizadores", userId), { status: novoStatus });
+    } catch (error) { console.error("Erro ao atualizar status do usuário:", error); throw error; }
 };
 
-// --- 4. FUNÇÕES EM TEMPO REAL (onSnapshot) ---
+// --- 5. FUNÇÕES DE NEGÓCIO (COBRANÇA, MENSAGENS) ---
 
-/**
- * Escuta por novos pedidos em tempo real para um restaurante.
- */
+export const solicitarDesbloqueio = async (restauranteId) => {
+    try {
+        await updateDoc(doc(db, "restaurantes", restauranteId), { solicitouDesbloqueio: true });
+    } catch (error) { console.error("Erro ao solicitar desbloqueio:", error); throw error; }
+};
+
+export const aprovarDesbloqueio = async (restauranteId) => {
+    try {
+        const novaData = new Date();
+        novaData.setDate(novaData.getDate() + 30); // Libera por 30 dias
+        await updateDoc(doc(db, "restaurantes", restauranteId), {
+            accessValidUntil: Timestamp.fromDate(novaData),
+            statusPagamento: 'pago',
+            solicitouDesbloqueio: false
+        });
+    } catch (error) { console.error("Erro ao aprovar desbloqueio:", error); throw error; }
+};
+
+export const enviarMensagemGlobal = async (grupoAlvo, textoMensagem) => {
+    try {
+        await addDoc(collection(db, "mensagensGlobais"), {
+            grupoAlvo: grupoAlvo,
+            texto: textoMensagem,
+            timestamp: Timestamp.now()
+        });
+    } catch (error) { console.error("Erro ao enviar mensagem:", error); throw error; }
+};
+
+// --- 6. FUNÇÕES EM TEMPO REAL (onSnapshot) ---
+
 export const onPedidosUpdate = (restauranteId, callback) => {
-  const pedidosColRef = collection(db, "restaurantes", restauranteId, "pedidos");
-  const q = query(pedidosColRef);
-
-  return onSnapshot(q, (querySnapshot) => {
-    const pedidos = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  const q = query(collection(db, "restaurantes", restauranteId, "pedidos"));
+  return onSnapshot(q, (snapshot) => {
+    const pedidos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     pedidos.sort((a, b) => b.timestamp.toDate() - a.timestamp.toDate());
     callback(pedidos);
   });

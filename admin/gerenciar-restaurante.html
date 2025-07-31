@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Restaurante - Painel do Gestor</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/panel.css">
+
+    <!-- Ícones (Font Awesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+</head>
+<body class="panel-body">
+
+    <!-- BARRA LATERAL DE NAVEGAÇÃO -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="logo">
+                <img src="../assets/images/logo.svg" alt="Logo E-Pra Já">
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="index.html#dashboard"><i class="fa-solid fa-chart-line icon"></i><span>Dashboard</span></a></li>
+                <li><a href="index.html#restaurantes" class="active"><i class="fa-solid fa-store icon"></i><span>Restaurantes</span></a></li>
+                <li><a href="index.html#usuarios"><i class="fa-solid fa-users icon"></i><span>Usuários</span></a></li>
+                <li><a href="index.html#indicacoes"><i class="fa-solid fa-gift icon"></i><span>Indicações</span></a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+             <a href="#" id="btn-logout-gerenciar"><i class="fa-solid fa-right-from-bracket icon"></i><span>Sair</span></a>
+        </div>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="main-content">
+        <header class="page-header">
+            <h1 id="page-title">Criar Novo Restaurante</h1>
+            <a href="index.html" class="btn">Voltar para a Lista</a>
+        </header>
+
+        <section class="dashboard-card">
+            <div id="message-container" class="message" style="display: none;"></div>
+            
+            <form id="form-gerenciar-restaurante" class="management-form">
+                <!-- Campos ocultos para controle -->
+                <input type="hidden" id="restauranteId">
+                <input type="hidden" id="donoId">
+
+                <h4 class="form-titulo-secao" style="grid-column: 1 / -1;">Informações do Restaurante</h4>
+                <div class="form-group">
+                    <label for="nome-restaurante">Nome do Restaurante</label>
+                    <input type="text" id="nome-restaurante" required>
+                </div>
+                <div class="form-group">
+                    <label for="endereco">Endereço Completo</label>
+                    <input type="text" id="endereco" required>
+                </div>
+
+                <h4 class="form-titulo-secao" style="grid-column: 1 / -1;">Informações Fiscais</h4>
+                <div class="form-group">
+                    <label for="cpf">CPF do Responsável</label>
+                    <input type="text" id="cpf" required>
+                </div>
+                <div class="form-group">
+                    <label for="cnpj">CNPJ (opcional)</label>
+                    <input type="text" id="cnpj">
+                </div>
+                 <div class="form-group">
+                    <label for="nome-empresa">Nome da Empresa (opcional)</label>
+                    <input type="text" id="nome-empresa">
+                </div>
+
+                <h4 class="form-titulo-secao" style="grid-column: 1 / -1;">Controle de Acesso e Assinatura</h4>
+                <div class="form-group">
+                    <label for="status">Status do Restaurante</label>
+                    <select id="status">
+                        <option value="ativo">Ativo</option>
+                        <option value="inativo">Inativo</option>
+                        <option value="teste">Em Teste</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="accessValidUntil">Acesso Válido Até</label>
+                    <input type="date" id="accessValidUntil" required>
+                </div>
+
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <button type="submit" class="btn btn-primario">Salvar Alterações</button>
+                </div>
+            </form>
+        </section>
+    </main>
+    
+    <!-- Script da Página -->
+    <script type="module" src="gerenciar-restaurante.js"></script>
+    <script>
+        // Script simples para o botão de logout funcionar nesta página também
+        document.getElementById('btn-logout-gerenciar').addEventListener('click', () => {
+            // Assumindo que a função de logout está no escopo global ou em um módulo importado
+            // Esta é uma simplificação. A lógica real estaria em um módulo compartilhado.
+            window.location.href = '../paginas/login.html'; 
+        });
+    </script>
+</body>
+</html>
+
