@@ -1,4 +1,4 @@
-/* E-Pra-Já v3: Arquivo de Estilo Global (style.css) */
+/* E-Pra-Já v4: Arquivo de Estilo Global (style.css) */
 /* Localização: /assets/css/style.css */
 
 /* --- 1. Importação de Fonte e Novas Variáveis Globais --- */
@@ -26,10 +26,24 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
 html { scroll-behavior: smooth; }
-body { background-color: var(--cor-fundo); color: var(--cor-secundaria); line-height: 1.7; overflow-x: hidden; }
+body { 
+    background-color: var(--cor-fundo); 
+    color: var(--cor-secundaria); 
+    line-height: 1.7; 
+    overflow-x: hidden;
+    /* CORREÇÃO DEFINITIVA DE LAYOUT USANDO GRID */
+    display: grid;
+    grid-template-rows: auto 1fr auto; /* Cabeçalho (auto), Conteúdo (1fr - ocupa todo o espaço), Rodapé (auto) */
+    min-height: 100vh;
+}
 .container { width: 90%; max-width: 1100px; margin: 0 auto; }
 a { text-decoration: none; color: var(--cor-primaria); transition: var(--transicao-padrao); }
 a:hover { color: var(--cor-primaria-escura); }
+
+.page-content {
+    /* Esta classe agora só precisa existir no HTML, o CSS dela não é mais necessário para o layout */
+    width: 100%;
+}
 
 /* --- 3. Componentes Globais (Botões, etc.) --- */
 .btn {
@@ -44,8 +58,8 @@ a:hover { color: var(--cor-primaria-escura); }
 /* --- 4. Cabeçalho e Rodapé Globais (v3) --- */
 .global-header {
     background-color: var(--cor-branco); padding: 1rem 0;
-    position: sticky; top: 0; z-index: 1000;
     border-bottom: 1px solid var(--cor-cinza-claro);
+    z-index: 1000;
 }
 .navbar { display: flex; justify-content: space-between; align-items: center; }
 .nav-logo img { height: 35px; }
@@ -110,35 +124,40 @@ a:hover { color: var(--cor-primaria-escura); }
 .preco-card ul li { margin-bottom: 1rem; display: flex; align-items: center; }
 .preco-card ul li i { color: var(--cor-sucesso); margin-right: 10px; }
 
-/* --- 6. Estilos para Login/Cadastro (Completo) --- */
-.login-body {
-    display: flex; flex-direction: column; min-height: 100vh;
-    background-color: var(--cor-fundo-alternativa);
-}
+/* --- 6. Estilos para Login/Cadastro --- */
 .login-main-content {
-    flex-grow: 1; display: flex; justify-content: center;
-    align-items: center; padding: 2rem 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 1rem;
+    background-color: var(--cor-fundo-alternativa);
 }
 .login-container {
     background-color: var(--cor-branco); padding: 2.5rem; border-radius: var(--borda-radius);
-    box-shadow: var(--sombra-media); width: 90%; max-width: 450px; text-align: center;
+    box-shadow: var(--sombra-media); width: 100%; max-width: 450px; text-align: center;
     animation: fadeIn 0.5s ease-out;
 }
-.login-container.cadastro-restaurante { max-width: 600px; } /* Tamanho maior para o form de cadastro */
+.login-container.cadastro-restaurante { max-width: 600px; }
 .login-container .logo img { height: 40px; margin: 0 auto 1.5rem; }
 .form-group { margin-bottom: 1rem; text-align: left; }
 .form-group label { font-weight: 500; margin-bottom: 0.5rem; display: block; }
-.form-group input, .form-group textarea {
+.form-group input, .form-group textarea, .form-group select {
     width: 100%; padding: 12px; border: 1px solid var(--cor-cinza-claro);
     border-radius: var(--borda-radius); font-size: 1rem;
 }
+#cadastro-form fieldset { border: none; padding: 0; margin: 0; }
+#cadastro-form legend.form-titulo-secao, .form-titulo-secao {
+    width: 100%;
+    margin-top: 1.5rem; margin-bottom: 1rem; border-bottom: 1px solid var(--cor-cinza-claro);
+    padding-bottom: 0.5rem; font-size: 1.1rem; font-weight: 600;
+}
+#cadastro-form fieldset:first-of-type legend.form-titulo-secao { margin-top: 0; }
+.radio-group { display: flex; gap: 1.5rem; align-items: center; }
+.radio-group label { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0; font-weight: 400; }
+
 #cnpj-section {
     background-color: var(--cor-fundo-alternativa); border: 1px dashed var(--cor-cinza-claro);
     padding: 1rem; margin: 1rem 0; border-radius: var(--borda-radius);
-}
-.form-titulo-secao {
-    margin-top: 1.5rem; margin-bottom: 1rem; border-bottom: 1px solid var(--cor-cinza-claro);
-    padding-bottom: 0.5rem; font-size: 1.1rem; font-weight: 600;
 }
 
 /* --- 7. Estilos da Página do Cardápio --- */

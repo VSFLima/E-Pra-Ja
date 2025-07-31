@@ -49,15 +49,7 @@ export const atualizarRestaurantePeloAdmin = async (restauranteId, donoId, dados
     } catch (error) { console.error("Erro ao atualizar restaurante:", error); throw error; }
 };
 
-export const atualizarStatusRestaurante = async (restauranteId, novoStatus) => {
-    try {
-        await updateDoc(doc(db, "restaurantes", restauranteId), { status: novoStatus });
-    } catch (error) { console.error("Erro ao atualizar status do restaurante:", error); throw error; }
-};
-
 export const apagarRestauranteCompleto = async (restauranteId) => {
-    // IMPORTANTE: Esta função apaga apenas o documento principal.
-    // Subcoleções (cardapio, pedidos) e imagens precisam ser apagadas via Cloud Function para uma limpeza completa.
     try {
         await deleteDoc(doc(db, "restaurantes", restauranteId));
     } catch (error) { console.error("Erro ao apagar restaurante:", error); throw error; }
@@ -65,8 +57,7 @@ export const apagarRestauranteCompleto = async (restauranteId) => {
 
 // --- 4. FUNÇÕES DE GESTÃO DE USUÁRIOS ---
 
-export const criarUsuarioEntregador = async (email, senha, nome, restauranteId) => {
-    // IMPORTANTE: Requer a criação manual do login no Firebase Auth pelo gestor.
+export const criarUsuarioEntregador = async (email, nome, restauranteId) => {
     try {
         const userDocRef = doc(collection(db, "utilizadores"));
         await setDoc(userDocRef, {
@@ -77,7 +68,6 @@ export const criarUsuarioEntregador = async (email, senha, nome, restauranteId) 
 };
 
 export const apagarUsuarioCompleto = async (userId) => {
-    // IMPORTANTE: A exclusão do usuário no Firebase Auth deve ser feita manualmente.
     try {
         await deleteDoc(doc(db, "utilizadores", userId));
     } catch (error) { console.error("Erro ao apagar usuário:", error); throw error; }
@@ -89,7 +79,49 @@ export const atualizarStatusUsuario = async (userId, novoStatus) => {
     } catch (error) { console.error("Erro ao atualizar status do usuário:", error); throw error; }
 };
 
-// --- 5. FUNÇÕES DE NEGÓCIO (COBRANÇA, MENSAGENS) ---
+// --- 5. FUNÇÕES DE GESTÃO DE CARDÁPIO (RESTAURANTE) ---
+
+export const salvarItemCardapio = async (restauranteId, itemId, itemData) => {
+    try {
+        const cardapioRef = collection(db, "restaurantes", restauranteId, "cardapio");
+        if (itemId) { // Editando
+            await updateDoc(doc(cardapioRef, itemId), itemData);
+        } else { // Adicionando
+            await addDoc(cardapioRef, itemData);
+        }
+    } catch (error) { console.error("Erro ao salvar item do cardápio:", error); throw error; }
+};
+
+export const apagarItemCardapio = async (restauranteId, itemId) => {
+    try {
+        await deleteDoc(doc(db, "restaurantes", restauranteId, "cardapio", itemId));
+    } catch (error) { console.error("Erro ao apagar item do cardápio:", error); throw error; }
+};
+
+// --- 6. FUNÇÕES DE GESTÃO DE PEDIDOS ---
+
+export const criarPedido = async (restauranteId, dadosPedido) => {
+    try {
+        return await addDoc(collection(db, "restaurantes", restauranteId, "pedidos"), dadosPedido);
+    } catch (error) { console.error("Erro ao criar pedido:", error); throw error; }
+};
+
+export const atualizarStatusPedido = async (restauranteId, pedidoId, novoStatus) => {
+    try {
+        await updateDoc(doc(db, "restaurantes", restauranteId, "pedidos", pedidoId), { status: novoStatus });
+    } catch (error) { console.error("Erro ao atualizar status do pedido:", error); throw error; }
+};
+
+export const atribuirEntregadorPedido = async (restauranteId, pedidoId, entregadorId) => {
+    try {
+        await updateDoc(doc(db, "restaurantes", restauranteId, "pedidos", pedidoId), {
+            entregadorId: entregadorId,
+            status: "Saiu para entrega"
+        });
+    } catch (error) { console.error("Erro ao atribuir entregador:", error); throw error; }
+};
+
+// --- 7. FUNÇÕES DE NEGÓCIO (COBRANÇA, MENSAGENS, CLIENTE) ---
 
 export const solicitarDesbloqueio = async (restauranteId) => {
     try {
@@ -100,7 +132,7 @@ export const solicitarDesbloqueio = async (restauranteId) => {
 export const aprovarDesbloqueio = async (restauranteId) => {
     try {
         const novaData = new Date();
-        novaData.setDate(novaData.getDate() + 30); // Libera por 30 dias
+        novaData.setDate(novaData.getDate() + 30);
         await updateDoc(doc(db, "restaurantes", restauranteId), {
             accessValidUntil: Timestamp.fromDate(novaData),
             statusPagamento: 'pago',
@@ -119,14 +151,11 @@ export const enviarMensagemGlobal = async (grupoAlvo, textoMensagem) => {
     } catch (error) { console.error("Erro ao enviar mensagem:", error); throw error; }
 };
 
-// --- 6. FUNÇÕES EM TEMPO REAL (onSnapshot) ---
-
-export const onPedidosUpdate = (restauranteId, callback) => {
-  const q = query(collection(db, "restaurantes", restauranteId, "pedidos"));
-  return onSnapshot(q, (snapshot) => {
-    const pedidos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    pedidos.sort((a, b) => b.timestamp.toDate() - a.timestamp.toDate());
-    callback(pedidos);
-  });
+export const salvarPedidoNoHistoricoCliente = async (userId, dadosPedido, nomeRestaurante) => {
+    if (!userId) return;
+    try {
+        const historicoRef = collection(db, "utilizadores", userId, "historicoPedidos");
+        await addDoc(historicoRef, { ...dadosPedido, nomeRestaurante: nomeRestaurante });
+    } catch (error) { console.error("Erro ao salvar no histórico:", error); }
 };
 
