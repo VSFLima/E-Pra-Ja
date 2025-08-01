@@ -3,25 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel do Entregador - E-Pra-Já</title>
-    
-    <!-- CSS -->
+    <title>Meu Dashboard - Painel do Entregador</title>
+
     <link rel="stylesheet" href="../assets/css/style.css?v=4.2">
     <link rel="stylesheet" href="../assets/css/panel.css?v=4.2">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
-    
-    <!-- CSS para o Mapa Interativo (Leaflet.js) -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <style>
-        #map { 
-            height: 300px; 
-            width: 100%;
-            border-radius: var(--borda-radius);
-            margin-bottom: 1.5rem;
-            border: 1px solid var(--cor-cinza-claro);
-            background-color: #eee; /* Cor de fundo enquanto o mapa carrega */
-        }
-    </style>
 </head>
 <body class="panel-body">
 
@@ -34,8 +20,9 @@
         </div>
         <nav class="sidebar-nav">
             <ul>
-                <li><a href="index.html" class="active"><i class="fa-solid fa-motorcycle icon"></i><span>Minhas Entregas</span></a></li>
-                <li><a href="dashboard.html"><i class="fa-solid fa-chart-bar icon"></i><span>Meu Dashboard</span></a></li>
+                <li><a href="index.html"><i class="fa-solid fa-motorcycle icon"></i><span>Minhas Entregas</span></a></li>
+                <!-- Link ativo para a página de dashboard -->
+                <li><a href="dashboard.html" class="active"><i class="fa-solid fa-chart-bar icon"></i><span>Meu Dashboard</span></a></li>
             </ul>
         </nav>
         <div class="sidebar-footer">
@@ -55,21 +42,33 @@
             </a>
         </header>
 
-        <!-- CONTEÚDO PRINCIPAL (COMPLETO) -->
+        <!-- CONTEÚDO PRINCIPAL -->
         <main class="main-content">
             <header class="page-header">
-                <h1>Minhas Entregas</h1>
-                <p>Olá, <strong id="nome-entregador">carregando...</strong>!</p>
+                <h1>Meu Dashboard Financeiro</h1>
+                <p>Acompanhe seus ganhos.</p>
             </header>
 
-            <!-- MAPA INTERATIVO -->
-            <div id="map"></div>
+            <!-- DASHBOARD DE GANHOS -->
+            <section class="entregador-dashboard-grid">
+                <div class="entregador-card">
+                    <div class="label">Ganhos Hoje</div>
+                    <div id="ganhos-hoje" class="value">R$ 0,00</div>
+                </div>
+                <div class="entregador-card">
+                    <div class="label">Ganhos na Semana</div>
+                    <div id="ganhos-semana" class="value">R$ 0,00</div>
+                </div>
+            </section>
 
-            <!-- Lista de Pedidos (COMPLETA) -->
-            <section class="dashboard-content">
-                <div id="lista-pedidos-entregador">
-                    <!-- Os cartões de pedido serão inseridos aqui pelo entregador.js -->
-                    <p>Carregando suas entregas...</p>
+            <!-- HISTÓRICO DE ENTREGAS -->
+            <section class="dashboard-card">
+                <div class="card-header">
+                    <h3>Histórico de Entregas Concluídas</h3>
+                </div>
+                <div id="historico-entregas-lista">
+                    <!-- A lista será preenchida pelo dashboard.js -->
+                    <p>Carregando seu histórico...</p>
                 </div>
             </section>
         </main>
@@ -82,12 +81,9 @@
 
     <!-- OVERLAY PARA O FUNDO DO MENU MÓVEL -->
     <div class="overlay" id="overlay"></div>
-
-    <!-- Script para o Mapa (Leaflet.js) -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
     <!-- Script do Painel -->
-    <script type="module" src="entregador.js?v=4.2"></script>
+    <script type="module" src="dashboard.js?v=4.2"></script>
 </body>
 </html>
 

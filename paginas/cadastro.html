@@ -5,15 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crie sua Conta de Restaurante - E-Pra-Já</title>
 
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css?v=4.2">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
 </head>
-<body>
+<body class="login-body">
 
     <!-- CABEÇALHO GLOBAL -->
     <div id="global-header-placeholder"></div>
 
-    <!-- CONTEÚDO PRINCIPAL (COM A ESTRUTURA CORRIGIDA) -->
     <main class="page-content login-main-content">
         <div class="login-container cadastro-restaurante">
             <header class="login-header">
@@ -37,6 +36,10 @@
                         <label for="cpf">Seu CPF</label>
                         <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" required>
                     </div>
+                     <div class="form-group">
+                        <label for="whatsapp">Seu WhatsApp</label>
+                        <input type="tel" id="whatsapp" name="whatsapp" placeholder="(00) 00000-0000" required>
+                    </div>
                 </fieldset>
 
                 <fieldset>
@@ -45,10 +48,40 @@
                         <label for="nome-restaurante">Nome do Restaurante</label>
                         <input type="text" id="nome-restaurante" name="nome-restaurante" required>
                     </div>
-                     <div class="form-group">
-                        <label for="endereco">Endereço Completo do Restaurante</label>
-                        <input type="text" id="endereco" name="endereco" placeholder="Rua, Nº, Bairro, Cidade - Estado" required>
+                    
+                    <div class="form-group">
+                        <label for="cep">CEP</label>
+                        <input type="text" id="cep" name="cep" placeholder="00000-000" required>
                     </div>
+                    <div class="form-group">
+                        <label for="logradouro">Rua / Logradouro</label>
+                        <input type="text" id="logradouro" name="logradouro" required>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="numero">Número</label>
+                            <input type="text" id="numero" name="numero" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="complemento">Complemento</label>
+                            <input type="text" id="complemento" name="complemento">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="bairro">Bairro</label>
+                        <input type="text" id="bairro" name="bairro" required>
+                    </div>
+                     <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="cidade">Cidade</label>
+                            <input type="text" id="cidade" name="cidade" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="uf">Estado (UF)</label>
+                            <input type="text" id="uf" name="uf" required>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label>Possui CNPJ?</label>
                         <div class="radio-group">
@@ -56,8 +89,6 @@
                             <label for="cnpj-sim"><input type="radio" id="cnpj-sim" name="possuiCnpj" value="sim"> Sim</label>
                         </div>
                     </div>
-
-                    <!-- Seção Condicional para CNPJ -->
                     <div id="cnpj-section" style="display: none;">
                         <div class="form-group">
                             <label for="nome-empresa">Nome da Empresa (Razão Social)</label>
@@ -95,8 +126,8 @@
     <div id="global-footer-placeholder"></div>
 
     <!-- Scripts -->
-    <script type="module" src="../js/components.js"></script>
-    <script type="module" src="../js/cadastro.js"></script>
+    <script type="module" src="../js/components.js?v=4.2"></script>
+    <script type="module" src="../js/cadastro.js?v=4.2"></script>
 
 </body>
 </html>

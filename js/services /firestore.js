@@ -32,6 +32,26 @@ export const getTodosUtilizadores = async () => {
     } catch (error) { console.error("Erro ao buscar todos os utilizadores:", error); throw error; }
 };
 
+export const getHistoricoEntregador = async (entregadorId) => {
+    let todasAsEntregas = [];
+    try {
+        const restaurantesSnapshot = await getDocs(collection(db, "restaurantes"));
+        for (const restauranteDoc of restaurantesSnapshot.docs) {
+            const restauranteId = restauranteDoc.id;
+            const pedidosRef = collection(db, "restaurantes", restauranteId, "pedidos");
+            const q = query(pedidosRef, where("entregadorId", "==", entregadorId), where("status", "==", "Entregue"));
+            const pedidosSnapshot = await getDocs(q);
+            pedidosSnapshot.forEach(pedidoDoc => {
+                todasAsEntregas.push({ id: pedidoDoc.id, ...pedidoDoc.data() });
+            });
+        }
+        return todasAsEntregas.sort((a, b) => b.timestamp.seconds - a.timestamp.seconds);
+    } catch (error) {
+        console.error("Erro ao buscar histórico do entregador:", error);
+        throw error;
+    }
+};
+
 // --- 3. FUNÇÕES DE GESTÃO DE RESTAURANTES (ADMIN) ---
 
 export const criarRestaurantePeloAdmin = async (dadosRestaurante, dadosUsuario) => {
@@ -85,7 +105,7 @@ export const atualizarStatusUsuario = async (userId, novoStatus) => {
     } catch (error) { console.error("Erro ao atualizar status do usuário:", error); throw error; }
 };
 
-// --- 5. FUNÇÕES DE GESTÃO DE CARDÁPIO E PEDIDOS (ESSENCIAIS) ---
+// --- 5. FUNÇÕES DE GESTÃO DE CARDÁPIO E PEDIDOS ---
 
 export const salvarItemCardapio = async (restauranteId, itemId, itemData) => {
     try {
@@ -116,10 +136,11 @@ export const atualizarStatusPedido = async (restauranteId, pedidoId, novoStatus)
     } catch (error) { console.error("Erro ao atualizar status do pedido:", error); throw error; }
 };
 
-export const atribuirEntregadorPedido = async (restauranteId, pedidoId, entregadorId) => {
+export const atribuirEntregadorPedido = async (restauranteId, pedidoId, entregadorId, taxaEntrega) => {
     try {
         await updateDoc(doc(db, "restaurantes", restauranteId, "pedidos", pedidoId), {
             entregadorId: entregadorId,
+            taxaDeEntrega: taxaEntrega,
             status: "Saiu para entrega"
         });
     } catch (error) { console.error("Erro ao atribuir entregador:", error); throw error; }
