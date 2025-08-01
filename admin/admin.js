@@ -4,7 +4,15 @@
 // --- 1. IMPORTAÇÕES ---
 import { db, auth } from '../js/firebase-config.js';
 import { onAuthChange, getUserRole, logoutUser } from '../js/services/auth.js';
-import { doc, collection, onSnapshot, updateDoc, deleteDoc, Timestamp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+import { 
+    aprovarDesbloqueio, 
+    atualizarStatusUsuario, 
+    apagarUsuarioCompleto,
+    atualizarStatusRestaurante,
+    apagarRestauranteCompleto,
+    concederAcessoManual
+} from '../js/services/firestore.js';
+import { collection, onSnapshot } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
 
 // --- 2. ELEMENTOS DO DOM ---
 const nomeUtilizadorEl = document.getElementById('nome-utilizador');
@@ -16,12 +24,15 @@ const listaRestaurantesEl = document.getElementById('lista-restaurantes-body');
 const listaUtilizadoresEl = document.getElementById('lista-utilizadores-body');
 const desbloqueioBody = document.getElementById('desbloqueio-body');
 const pendentesBody = document.getElementById('pendentes-body');
-const mainContent = document.querySelector('.main-content'); // Para o listener de eventos
+const mainContent = document.querySelector('.main-content');
+const modalAcesso = document.getElementById('modal-acesso');
+const fecharModalAcessoBtn = document.getElementById('fechar-modal-acesso-btn');
+const formAcesso = document.getElementById('form-acesso');
+const restauranteIdAcessoInput = document.getElementById('restaurante-id-acesso');
+const nomeRestauranteModalEl = document.getElementById('nome-restaurante-modal');
 
 // --- 3. FUNÇÕES DE RENDERIZAÇÃO EM TEMPO REAL ---
-
 const carregarDadosEmTempoReal = () => {
-    // Listener para Restaurantes (para dashboard e tabelas de gestão)
     onSnapshot(collection(db, "restaurantes"), (snapshot) => {
         let totalArrecadado = 0, totalPendente = 0, totalEmTeste = 0;
         const precoMensalidade = 49.90;
@@ -32,11 +43,9 @@ const carregarDadosEmTempoReal = () => {
 
         snapshot.docs.forEach(docSnap => {
             const rest = { id: docSnap.id, ...docSnap.data() };
-            
             if (rest.statusPagamento === 'pago') totalArrecadado += precoMensalidade;
             if (rest.statusPagamento === 'pendente') totalPendente += precoMensalidade;
             if (rest.status === 'teste') totalEmTeste += precoMensalidade;
-
             renderizarLinhaRestaurante(rest);
             if (rest.solicitouDesbloqueio) renderizarLinhaDesbloqueio(rest);
             if (rest.statusPagamento === 'pendente') renderizarLinhaPendente(rest);
@@ -45,19 +54,15 @@ const carregarDadosEmTempoReal = () => {
         totalArrecadadoEl.textContent = `R$ ${totalArrecadado.toFixed(2)}`;
         totalPendenteEl.textContent = `R$ ${totalPendente.toFixed(2)}`;
         totalEmTesteEl.textContent = `R$ ${totalEmTeste.toFixed(2)}`;
-        
         if(desbloqueioBody.innerHTML === '') desbloqueioBody.innerHTML = '<tr><td colspan="3">Nenhuma solicitação no momento.</td></tr>';
         if(pendentesBody.innerHTML === '') pendentesBody.innerHTML = '<tr><td colspan="2">Nenhum restaurante com pagamento pendente.</td></tr>';
         if(listaRestaurantesEl.innerHTML === '') listaRestaurantesEl.innerHTML = '<tr><td colspan="4">Nenhum restaurante cadastrado.</td></tr>';
     });
 
-    // Listener para Usuários
     onSnapshot(collection(db, "utilizadores"), (snapshot) => {
         listaUtilizadoresEl.innerHTML = '';
-        snapshot.docs.forEach(docSnap => {
-            renderizarLinhaUsuario({ id: docSnap.id, ...docSnap.data() });
-        });
-         if(listaUtilizadoresEl.innerHTML === '') listaUtilizadoresEl.innerHTML = '<tr><td colspan="5">Nenhum usuário cadastrado.</td></tr>';
+        snapshot.docs.forEach(docSnap => renderizarLinhaUsuario({ id: docSnap.id, ...docSnap.data() }));
+        if(listaUtilizadoresEl.innerHTML === '') listaUtilizadoresEl.innerHTML = '<tr><td colspan="5">Nenhum usuário cadastrado.</td></tr>';
     });
 };
 
@@ -68,10 +73,9 @@ function renderizarLinhaRestaurante(rest) {
         <td><span class="status ${rest.status}">${rest.status}</span></td>
         <td><span class="status ${rest.statusPagamento || 'n/a'}">${rest.statusPagamento || 'N/A'}</span></td>
         <td>
+            <button class="btn btn-sm btn-gerenciar-acesso" data-id="${rest.id}" data-nome="${rest.nome}">Acesso</button>
             <a href="gerenciar-restaurante.html?id=${rest.id}" class="btn btn-sm">Editar</a>
-            <button class="btn btn-sm status-toggle-restaurante" data-id="${rest.id}" data-status="${rest.status}">
-                ${rest.status === 'ativo' ? 'Desativar' : 'Ativar'}
-            </button>
+            <button class="btn btn-sm status-toggle-restaurante" data-id="${rest.id}" data-status="${rest.status}">${rest.status === 'ativo' ? 'Desativar' : 'Ativar'}</button>
             <button class="btn btn-sm btn-erro delete-restaurante" data-id="${rest.id}">Apagar</button>
         </td>
     `;
@@ -111,44 +115,54 @@ function renderizarLinhaPendente(rest) {
 mainContent.addEventListener('click', async (e) => {
     const target = e.target;
     const id = target.dataset.id;
-    if (!id) return; // Se o elemento clicado não tem um data-id, ignora.
+    if (!id) return;
 
-    // Ações para Restaurantes
+    if (target.classList.contains('btn-gerenciar-acesso')) {
+        restauranteIdAcessoInput.value = id;
+        nomeRestauranteModalEl.textContent = target.dataset.nome;
+        modalAcesso.classList.add('visible');
+    }
     if (target.classList.contains('status-toggle-restaurante')) {
         const novoStatus = target.dataset.status === 'ativo' ? 'inativo' : 'ativo';
-        await updateDoc(doc(db, "restaurantes", id), { status: novoStatus });
-    } else if (target.classList.contains('delete-restaurante')) {
-        if (confirm(`Tem certeza que deseja apagar este restaurante e todos os seus dados? Esta ação não pode ser desfeita.`)) {
-            await deleteDoc(doc(db, "restaurantes", id));
-            // Idealmente, uma Cloud Function apagaria o usuário, imagens e subcoleções.
-        }
-    } else if (target.classList.contains('aprovar-desbloqueio')) {
-        const novaData = new Date();
-        novaData.setDate(novaData.getDate() + 30);
-        await updateDoc(doc(db, "restaurantes", id), {
-            accessValidUntil: Timestamp.fromDate(novaData),
-            statusPagamento: 'pago',
-            solicitouDesbloqueio: false
-        });
+        await atualizarStatusRestaurante(id, novoStatus);
     }
-
-    // Ações para Usuários
+    if (target.classList.contains('delete-restaurante')) {
+        if (confirm(`Tem certeza que deseja apagar este restaurante e todos os seus dados?`)) {
+            await apagarRestauranteCompleto(id);
+        }
+    }
+    if (target.classList.contains('aprovar-desbloqueio')) {
+        await aprovarDesbloqueio(id);
+    }
     if (target.classList.contains('status-toggle-usuario')) {
         const novoStatus = target.dataset.status === 'ativo' ? 'inativo' : 'ativo';
-        await updateDoc(doc(db, "utilizadores", id), { status: novoStatus });
-    } else if (target.classList.contains('delete-usuario')) {
-        if (id === auth.currentUser.uid) {
-            alert("Você não pode apagar sua própria conta de gestor.");
-            return;
-        }
-        if (confirm(`Tem certeza que deseja apagar este usuário? Esta ação não pode ser desfeita.`)) {
-            await deleteDoc(doc(db, "utilizadores", id));
-            // Idealmente, uma Cloud Function apagaria o usuário do Auth também.
+        await atualizarStatusUsuario(id, novoStatus);
+    }
+    if (target.classList.contains('delete-usuario')) {
+        if (id === auth.currentUser.uid) { alert("Você não pode apagar sua própria conta."); return; }
+        if (confirm(`Tem certeza que deseja apagar este usuário?`)) {
+            await apagarUsuarioCompleto(id);
         }
     }
 });
 
-// --- 5. INICIALIZAÇÃO DO PAINEL ---
+formAcesso.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = restauranteIdAcessoInput.value;
+    const dias = parseInt(formAcesso.dias.value);
+    if (!id || isNaN(dias)) return;
+    
+    try {
+        await concederAcessoManual(id, dias);
+        modalAcesso.classList.remove('visible');
+        formAcesso.reset();
+        alert('Acesso do restaurante atualizado com sucesso!');
+    } catch (error) {
+        alert('Erro ao atualizar o acesso.');
+    }
+});
+
+// --- 5. INICIALIZAÇÃO E SEGURANÇA DO PAINEL ---
 const inicializarPainelAdmin = () => {
     onAuthChange(async (user) => {
         if (user && await getUserRole(user.uid) === 'gestor') {
@@ -160,10 +174,8 @@ const inicializarPainelAdmin = () => {
     });
 };
 
-btnLogout.addEventListener('click', () => {
-    logoutUser();
-    window.location.href = '/paginas/login.html';
-});
+fecharModalAcessoBtn.addEventListener('click', () => modalAcesso.classList.remove('visible'));
+btnLogout.addEventListener('click', () => { logoutUser(); window.location.href = '/paginas/login.html'; });
 
 document.addEventListener('DOMContentLoaded', inicializarPainelAdmin);
 

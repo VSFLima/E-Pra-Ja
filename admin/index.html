@@ -114,7 +114,27 @@
         </section>
     </main>
     
+    <!-- (NOVO E COMPLETO) MODAL DE GERENCIAMENTO DE ACESSO -->
+    <div class="modal-overlay" id="modal-acesso">
+        <div class="modal-container">
+            <header class="modal-header">
+                <h3>Gerenciar Acesso de: <span id="nome-restaurante-modal"></span></h3>
+                <button id="fechar-modal-acesso-btn" class="btn-fechar-modal">&times;</button>
+            </header>
+            <form id="form-acesso">
+                <input type="hidden" id="restaurante-id-acesso">
+                <div class="form-group">
+                    <label for="dias">Conceder acesso por quantos dias?</label>
+                    <input type="number" id="dias" name="dias" value="30" required>
+                    <small>Use 7 para teste, 30 para mensalidade, 36500 para vitalício.</small>
+                </div>
+                <button type="submit" class="btn btn-primario" style="width: 100%;">Atualizar Acesso</button>
+            </form>
+        </div>
+    </div>
+
     <script type="module" src="admin.js"></script>
 </body>
 </html>
 
+ 

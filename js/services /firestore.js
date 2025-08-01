@@ -55,6 +55,12 @@ export const apagarRestauranteCompleto = async (restauranteId) => {
     } catch (error) { console.error("Erro ao apagar restaurante:", error); throw error; }
 };
 
+export const atualizarStatusRestaurante = async (restauranteId, novoStatus) => {
+    try {
+        await updateDoc(doc(db, "restaurantes", restauranteId), { status: novoStatus });
+    } catch (error) { console.error("Erro ao atualizar status do restaurante:", error); throw error; }
+};
+
 // --- 4. FUNÇÕES DE GESTÃO DE USUÁRIOS ---
 
 export const criarUsuarioEntregador = async (email, nome, restauranteId) => {
@@ -79,14 +85,14 @@ export const atualizarStatusUsuario = async (userId, novoStatus) => {
     } catch (error) { console.error("Erro ao atualizar status do usuário:", error); throw error; }
 };
 
-// --- 5. FUNÇÕES DE GESTÃO DE CARDÁPIO (RESTAURANTE) ---
+// --- 5. FUNÇÕES DE GESTÃO DE CARDÁPIO E PEDIDOS (ESSENCIAIS) ---
 
 export const salvarItemCardapio = async (restauranteId, itemId, itemData) => {
     try {
         const cardapioRef = collection(db, "restaurantes", restauranteId, "cardapio");
-        if (itemId) { // Editando
+        if (itemId) {
             await updateDoc(doc(cardapioRef, itemId), itemData);
-        } else { // Adicionando
+        } else {
             await addDoc(cardapioRef, itemData);
         }
     } catch (error) { console.error("Erro ao salvar item do cardápio:", error); throw error; }
@@ -97,8 +103,6 @@ export const apagarItemCardapio = async (restauranteId, itemId) => {
         await deleteDoc(doc(db, "restaurantes", restauranteId, "cardapio", itemId));
     } catch (error) { console.error("Erro ao apagar item do cardápio:", error); throw error; }
 };
-
-// --- 6. FUNÇÕES DE GESTÃO DE PEDIDOS ---
 
 export const criarPedido = async (restauranteId, dadosPedido) => {
     try {
@@ -121,7 +125,7 @@ export const atribuirEntregadorPedido = async (restauranteId, pedidoId, entregad
     } catch (error) { console.error("Erro ao atribuir entregador:", error); throw error; }
 };
 
-// --- 7. FUNÇÕES DE NEGÓCIO (COBRANÇA, MENSAGENS, CLIENTE) ---
+// --- 6. FUNÇÕES DE NEGÓCIO (COBRANÇA, MENSAGENS, ASSINATURA) ---
 
 export const solicitarDesbloqueio = async (restauranteId) => {
     try {
@@ -139,6 +143,21 @@ export const aprovarDesbloqueio = async (restauranteId) => {
             solicitouDesbloqueio: false
         });
     } catch (error) { console.error("Erro ao aprovar desbloqueio:", error); throw error; }
+};
+
+export const concederAcessoManual = async (restauranteId, dias) => {
+    try {
+        const novaData = new Date();
+        if (dias >= 36500) {
+            novaData.setFullYear(novaData.getFullYear() + 100);
+        } else {
+            novaData.setDate(novaData.getDate() + dias);
+        }
+        await updateDoc(doc(db, "restaurantes", restauranteId), {
+            accessValidUntil: Timestamp.fromDate(novaData),
+            statusPagamento: 'pago'
+        });
+    } catch (error) { console.error("Erro ao conceder acesso manual:", error); throw error; }
 };
 
 export const enviarMensagemGlobal = async (grupoAlvo, textoMensagem) => {
