@@ -30,8 +30,21 @@ const fecharModalAcessoBtn = document.getElementById('fechar-modal-acesso-btn');
 const formAcesso = document.getElementById('form-acesso');
 const restauranteIdAcessoInput = document.getElementById('restaurante-id-acesso');
 const nomeRestauranteModalEl = document.getElementById('nome-restaurante-modal');
+// Elementos para o menu responsivo
+const sidebar = document.getElementById('sidebar');
+const menuToggle = document.getElementById('menu-toggle');
+const overlay = document.getElementById('overlay');
 
-// --- 3. FUNÇÕES DE RENDERIZAÇÃO EM TEMPO REAL ---
+// --- 3. LÓGICA DO MENU RESPONSIVO ---
+const toggleMenu = () => {
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('visible');
+};
+
+if (menuToggle) menuToggle.addEventListener('click', toggleMenu);
+if (overlay) overlay.addEventListener('click', toggleMenu);
+
+// --- 4. FUNÇÕES DE RENDERIZAÇÃO EM TEMPO REAL ---
 const carregarDadosEmTempoReal = () => {
     onSnapshot(collection(db, "restaurantes"), (snapshot) => {
         let totalArrecadado = 0, totalPendente = 0, totalEmTeste = 0;
@@ -111,7 +124,7 @@ function renderizarLinhaPendente(rest) {
     pendentesBody.appendChild(tr);
 }
 
-// --- 4. LISTENER DE AÇÕES CENTRALIZADO (100% FUNCIONAL) ---
+// --- 5. LISTENER DE AÇÕES CENTRALIZADO ---
 mainContent.addEventListener('click', async (e) => {
     const target = e.target;
     const id = target.dataset.id;
@@ -162,7 +175,7 @@ formAcesso.addEventListener('submit', async (e) => {
     }
 });
 
-// --- 5. INICIALIZAÇÃO E SEGURANÇA DO PAINEL ---
+// --- 6. INICIALIZAÇÃO E SEGURANÇA DO PAINEL ---
 const inicializarPainelAdmin = () => {
     onAuthChange(async (user) => {
         if (user && await getUserRole(user.uid) === 'gestor') {

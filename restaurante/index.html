@@ -5,17 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel do Restaurante - E-Pra-Já</title>
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <link rel="stylesheet" href="../assets/css/panel.css">
-
-    <!-- Ícones (Font Awesome) -->
+    <link rel="stylesheet" href="../assets/css/style.css?v=4.1">
+    <link rel="stylesheet" href="../assets/css/panel.css?v=4.1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
 </head>
 <body class="panel-body">
 
-    <!-- BARRA LATERAL DE NAVEGAÇÃO -->
-    <aside class="sidebar">
+    <!-- BARRA LATERAL (MENU GAVETA) -->
+    <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <a href="index.html" class="logo">
                 <img src="../assets/images/logo.svg" alt="Logo E-Pra Já">
@@ -35,81 +32,101 @@
         </div>
     </aside>
 
-    <!-- CONTEÚDO PRINCIPAL -->
-    <main class="main-content">
-        <header class="page-header">
-            <div>
-                <h1>Painel de Controle</h1>
-                <p>Gerenciando o restaurante: <strong id="nome-restaurante">Carregando...</strong></p>
-            </div>
-            <div style="display: flex; align-items: center; gap: 1rem;">
-                <span id="label-status-loja">Loja Fechada</span>
-                <label class="switch">
-                    <input type="checkbox" id="switch-status-loja">
-                    <span class="slider"></span>
-                </label>
-            </div>
+    <!-- WRAPPER PRINCIPAL PARA O CONTEÚDO -->
+    <div class="main-wrapper">
+        <!-- CABEÇALHO SUPERIOR MÓVEL -->
+        <header class="mobile-header">
+            <button class="menu-toggle" id="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <a href="index.html" class="logo">
+                <img src="../assets/images/logo.svg" alt="Logo E-Pra Já">
+            </a>
         </header>
 
-        <!-- SEÇÃO DE PEDIDOS (COMPLETA) -->
-        <section id="pedidos" class="dashboard-card">
-            <div class="card-header"><h3>Pedidos Recebidos</h3></div>
-            <div class="table-wrapper">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Horário</th><th>Cliente</th><th>Itens</th><th>Total</th><th>Status</th><th>Mudar Status</th><th>Atribuir</th>
-                        </tr>
-                    </thead>
-                    <tbody id="pedidos-table-body">
-                        <tr><td colspan="7" style="text-align: center;">Aguardando novos pedidos...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
+        <!-- CONTEÚDO PRINCIPAL -->
+        <main class="main-content">
+            <header class="page-header">
+                <div>
+                    <h1>Painel de Controle</h1>
+                    <p>Gerenciando o restaurante: <strong id="nome-restaurante">Carregando...</strong></p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <span id="label-status-loja">Loja Fechada</span>
+                    <label class="switch">
+                        <input type="checkbox" id="switch-status-loja">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </header>
 
-        <!-- SEÇÃO DE GESTÃO DE CARDÁPIO (COMPLETA) -->
-        <section id="cardapio" class="dashboard-card">
-            <div class="card-header"><h3>Gestão de Cardápio</h3></div>
-            <h4 id="form-cardapio-title" class="form-titulo-secao">Adicionar Novo Item</h4>
-            <form id="form-cardapio" class="management-form">
-                <input type="hidden" id="item-id">
-                <div class="form-group"><label for="nome">Nome do Item</label><input type="text" id="nome" name="nome" required></div>
-                <div class="form-group"><label for="preco">Preço (Ex: 12.50)</label><input type="number" step="0.01" id="preco" name="preco" required></div>
-                <div class="form-group"><label for="categoria">Categoria (Ex: Bebidas)</label><input type="text" id="categoria" name="categoria"></div>
-                <div class="form-group"><label for="imagem">Foto do Item</label><input type="file" id="imagem" name="imagem" accept="image/*"></div>
-                <div class="form-group" style="grid-column: 1 / -1;"><label for="descricao">Descrição</label><textarea id="descricao" name="descricao" rows="2"></textarea></div>
-                <div class="form-group" style="flex-direction: row; align-items: center; gap: 10px;"><input type="checkbox" id="disponivel" name="disponivel" checked><label for="disponivel" style="margin: 0;">Item Disponível</label></div>
-                <div class="form-group" style="grid-column: 1 / -1;"><button type="submit" class="btn btn-primario">Salvar Item</button></div>
-            </form>
-            <hr style="margin: 2rem 0;">
-            <h4 class="form-titulo-secao">Itens Cadastrados</h4>
-            <div class="table-wrapper">
-                <table class="data-table">
-                    <thead><tr><th>Foto</th><th>Nome</th><th>Preço</th><th>Disponível?</th><th>Ações</th></tr></thead>
-                    <tbody id="tabela-cardapio-body"></tbody>
-                </table>
-            </div>
-        </section>
+            <!-- SEÇÃO DE PEDIDOS (COMPLETA) -->
+            <section id="pedidos" class="dashboard-card">
+                <div class="card-header"><h3>Pedidos Recebidos</h3></div>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Horário</th><th>Cliente</th><th>Itens</th><th>Total</th><th>Status</th><th>Mudar Status</th><th>Atribuir</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pedidos-table-body">
+                            <tr><td colspan="7" style="text-align: center;">Aguardando novos pedidos...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
 
-        <!-- SEÇÃO DE GESTÃO DE ENTREGADORES (COMPLETA) -->
-        <section id="entregadores" class="dashboard-card">
-             <div class="card-header"><h3>Gestão de Entregadores</h3></div>
-             <h4 class="form-titulo-secao">Cadastrar Novo Entregador</h4>
-             <form id="form-entregador" class="management-form">
-                <div class="form-group"><label for="nomeEntregador">Nome Completo</label><input type="text" id="nomeEntregador" required></div>
-                <div class="form-group"><label for="emailEntregador">E-mail (será o login)</label><input type="email" id="emailEntregador" required></div>
-                <div class="form-group"><label for="senhaEntregador">Senha (mín. 6 caracteres)</label><input type="password" id="senhaEntregador" required></div>
-                <div class="form-group" style="align-self: flex-end;"><button type="submit" class="btn btn-primario">Cadastrar Entregador</button></div>
-             </form>
-             <hr style="margin: 2rem 0;">
-             <h4 class="form-titulo-secao">Entregadores Cadastrados</h4>
-             <ul id="lista-entregadores" style="list-style-type: none; padding: 0;"></ul>
-        </section>
+            <!-- SEÇÃO DE GESTÃO DE CARDÁPIO (COMPLETA) -->
+            <section id="cardapio" class="dashboard-card">
+                <div class="card-header"><h3>Gestão de Cardápio</h3></div>
+                <h4 id="form-cardapio-title" class="form-titulo-secao">Adicionar Novo Item</h4>
+                <form id="form-cardapio" class="management-form">
+                    <input type="hidden" id="item-id">
+                    <div class="form-group"><label for="nome">Nome do Item</label><input type="text" id="nome" name="nome" required></div>
+                    <div class="form-group"><label for="preco">Preço (Ex: 12.50)</label><input type="number" step="0.01" id="preco" name="preco" required></div>
+                    <div class="form-group"><label for="categoria">Categoria (Ex: Bebidas)</label><input type="text" id="categoria" name="categoria"></div>
+                    <div class="form-group"><label for="imagem">Foto do Item</label><input type="file" id="imagem" name="imagem" accept="image/*"></div>
+                    <div class="form-group" style="grid-column: 1 / -1;"><label for="descricao">Descrição</label><textarea id="descricao" name="descricao" rows="2"></textarea></div>
+                    <div class="form-group" style="flex-direction: row; align-items: center; gap: 10px;"><input type="checkbox" id="disponivel" name="disponivel" checked><label for="disponivel" style="margin: 0;">Item Disponível</label></div>
+                    <div class="form-group" style="grid-column: 1 / -1;"><button type="submit" class="btn btn-primario">Salvar Item</button></div>
+                </form>
+                <hr style="margin: 2rem 0;">
+                <h4 class="form-titulo-secao">Itens Cadastrados</h4>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead><tr><th>Foto</th><th>Nome</th><th>Preço</th><th>Disponível?</th><th>Ações</th></tr></thead>
+                        <tbody id="tabela-cardapio-body"></tbody>
+                    </table>
+                </div>
+            </section>
 
-    </main>
+            <!-- SEÇÃO DE GESTÃO DE ENTREGADORES (COMPLETA) -->
+            <section id="entregadores" class="dashboard-card">
+                 <div class="card-header"><h3>Gestão de Entregadores</h3></div>
+                 <h4 class="form-titulo-secao">Cadastrar Novo Entregador</h4>
+                 <form id="form-entregador" class="management-form">
+                    <div class="form-group"><label for="nomeEntregador">Nome Completo</label><input type="text" id="nomeEntregador" required></div>
+                    <div class="form-group"><label for="emailEntregador">E-mail (será o login)</label><input type="email" id="emailEntregador" required></div>
+                    <div class="form-group"><label for="senhaEntregador">Senha (mín. 6 caracteres)</label><input type="password" id="senhaEntregador" required></div>
+                    <div class="form-group" style="align-self: flex-end;"><button type="submit" class="btn btn-primario">Cadastrar Entregador</button></div>
+                 </form>
+                 <hr style="margin: 2rem 0;">
+                 <h4 class="form-titulo-secao">Entregadores Cadastrados</h4>
+                 <ul id="lista-entregadores" style="list-style-type: none; padding: 0;"></ul>
+            </section>
+        </main>
+        
+        <!-- RODAPÉ DO PAINEL -->
+        <footer class="main-content-footer">
+            <p>&copy; 2025 E-Pra-Já. Painel do Restaurante.</p>
+        </footer>
+    </div>
+
+    <!-- OVERLAY PARA O FUNDO DO MENU MÓVEL -->
+    <div class="overlay" id="overlay"></div>
     
-    <!-- MODAL DE ATRIBUIÇÃO DE ENTREGADOR -->
+    <!-- MODAIS E POP-UPS (COMPLETOS) -->
     <div class="modal-overlay" id="modal-atribuir">
         <div class="modal-container">
             <header class="modal-header">
@@ -125,8 +142,6 @@
             </form>
         </div>
     </div>
-
-    <!-- POP-UP DE COBRANÇA (v4) -->
     <div class="billing-popup-overlay" id="billing-popup">
         <div class="billing-popup-container">
             <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: var(--cor-erro); margin-bottom: 1rem;"></i>
@@ -145,8 +160,6 @@
             </div>
         </div>
     </div>
-
-    <!-- POP-UP DE MENSAGEM DO GESTOR (v4) -->
     <div class="billing-popup-overlay" id="manager-message-popup">
         <div class="billing-popup-container">
             <i class="fas fa-info-circle" style="font-size: 3rem; color: var(--cor-primaria); margin-bottom: 1rem;"></i>
@@ -156,8 +169,7 @@
         </div>
     </div>
 
-    <!-- Script do Painel -->
-    <script type="module" src="restaurante.js"></script>
+    <script type="module" src="restaurante.js?v=4.1"></script>
 </body>
 </html>
 

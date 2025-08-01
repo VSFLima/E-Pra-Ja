@@ -1,47 +1,24 @@
-/* E-Pra-Já v2: Serviço de Autenticação (auth.js) */
+/* E-Pra-Já v4: Serviço de Autenticação (auth.js) */
 /* Localização: /js/services/auth.js */
 
 // --- 1. IMPORTAÇÕES ---
+// Importa os serviços de Auth e DB que configuramos no firebase-config.js
 import { db, auth } from '../firebase-config.js';
+
+// Importa todas as funções de Autenticação que vamos usar
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
-  sendPasswordResetEmail // <-- NOVA IMPORTAÇÃO
+  sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
-import {
-  doc,
-  setDoc,
-  getDoc
-} from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+
+// Importa as funções do Firestore para buscar o perfil do usuário
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
 
 
-// --- 2. FUNÇÕES DE AUTENTICAÇÃO ---
-
-/**
- * Registra um novo usuário no Firebase Auth e guarda seus dados
- * na coleção 'usuarios' do Firestore.
- * @param {string} email - O e-mail do usuário.
- * @param {string} password - A senha do usuário.
- * @param {object} additionalData - Dados adicionais para guardar, como nome e role.
- * @returns {Promise<UserCredential>} O objeto com as credenciais do usuário.
- */
-export const registerUser = async (email, password, additionalData) => {
-  try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-    const userDocRef = doc(db, "utilizadores", user.uid);
-    await setDoc(userDocRef, {
-      email: user.email,
-      ...additionalData
-    });
-    return userCredential;
-  } catch (error) {
-    console.error("Erro ao registrar usuário:", error.message);
-    throw error;
-  }
-};
+// --- 2. FUNÇÕES DE AUTENTICAÇÃO EXPORTADAS ---
 
 /**
  * Autentica um usuário existente com e-mail e senha.
@@ -54,7 +31,7 @@ export const loginUser = async (email, password) => {
     return await signInWithEmailAndPassword(auth, email, password);
   } catch (error) {
     console.error("Erro ao fazer login:", error.message);
-    throw error;
+    throw error; // Lança o erro para ser tratado no script que chamou
   }
 };
 
@@ -74,6 +51,7 @@ export const logoutUser = async () => {
 /**
  * Observa mudanças no estado de autenticação (login/logout).
  * @param {function} callback - Função a ser executada quando o estado muda.
+ * Ela recebe o objeto 'user' (ou null) como argumento.
  * @returns {Unsubscribe} Uma função para cancelar o observador.
  */
 export const onAuthChange = (callback) => {
@@ -87,6 +65,7 @@ export const onAuthChange = (callback) => {
  */
 export const getUserRole = async (uid) => {
   try {
+    if (!uid) return null;
     const userDocRef = doc(db, "utilizadores", uid);
     const docSnap = await getDoc(userDocRef);
     return docSnap.exists() ? docSnap.data().role : null;
@@ -97,7 +76,7 @@ export const getUserRole = async (uid) => {
 };
 
 /**
- * (NOVA FUNÇÃO) Envia um e-mail de redefinição de senha.
+ * Envia um e-mail de redefinição de senha.
  * @param {string} email - O e-mail do usuário que solicitou a redefinição.
  * @returns {Promise<void>}
  */

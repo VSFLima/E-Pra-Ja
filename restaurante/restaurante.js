@@ -4,15 +4,15 @@
 // --- 1. IMPORTAÇÕES ---
 import { db } from '../js/firebase-config.js';
 import { onAuthChange, getUserRole, logoutUser } from '../js/services/auth.js';
-import { 
-    criarUsuarioEntregador, 
-    apagarUsuarioCompleto, 
+import {
+    criarUsuarioEntregador,
+    apagarUsuarioCompleto,
     solicitarDesbloqueio,
     salvarItemCardapio,
     apagarItemCardapio,
     atualizarStatusPedido,
     atribuirEntregadorPedido
-} from '../js/services/firestore.js'; 
+} from '../js/services/firestore.js';
 import { doc, getDoc, collection, query, where, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
 
 // --- 2. ELEMENTOS DO DOM ---
@@ -38,6 +38,10 @@ const linkEnviarComprovante = document.getElementById('link-enviar-comprovante')
 const managerMessagePopup = document.getElementById('manager-message-popup');
 const managerMessageText = document.getElementById('manager-message-text');
 const btnFecharMensagem = document.getElementById('btn-fechar-mensagem');
+// Elementos para o menu responsivo
+const sidebar = document.getElementById('sidebar');
+const menuToggle = document.getElementById('menu-toggle');
+const overlay = document.getElementById('overlay');
 
 // --- 3. ESTADO DA APLICAÇÃO ---
 let meuRestauranteId = null;
@@ -46,12 +50,21 @@ let entregadoresDisponiveis = [];
 let pedidoParaAtribuir = null;
 let mensagensExibidas = new Set();
 
-// --- 4. FUNÇÕES DE LÓGICA DE NEGÓCIO (Cobrança, Mensagens, Status) ---
+// --- 4. LÓGICA DO MENU RESPONSIVO ---
+const toggleMenu = () => {
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('visible');
+};
+
+if (menuToggle) menuToggle.addEventListener('click', toggleMenu);
+if (overlay) overlay.addEventListener('click', toggleMenu);
+
+// --- 5. LÓGICA DE NEGÓCIO (Cobrança, Mensagens, Status) ---
 function verificarAssinatura(restData) {
     if (!restData.accessValidUntil) return;
     const hoje = new Date();
     const dataValidade = restData.accessValidUntil.toDate();
-
+    
     if (hoje > dataValidade) {
         mainContent.style.filter = 'blur(5px)';
         billingPopup.classList.add('visible');
@@ -84,19 +97,64 @@ function verificarMensagens(restData) {
     });
 }
 
-// --- 5. FUNÇÕES DE RENDERIZAÇÃO ---
-function renderizarPedidos(pedidos) { /* ... (código completo mantido) ... */ }
-function renderizarTabelaCardapio(itens) { /* ... (código completo mantido) ... */ }
-function renderizarEntregadores(entregadores) { /* ... (código completo mantido) ... */ }
+// --- 6. FUNÇÕES DE RENDERIZAÇÃO ---
+function renderizarPedidos(pedidos) {
+    pedidosTableBodyEl.innerHTML = '';
+    if (pedidos.length === 0) {
+        pedidosTableBodyEl.innerHTML = '<tr><td colspan="7">Nenhum pedido recebido ainda.</td></tr>';
+        return;
+    }
+    pedidos.forEach(p => {
+        const tr = document.createElement('tr');
+        tr.dataset.pedidoId = p.id;
+        tr.innerHTML = `
+            <td>${p.timestamp.toDate().toLocaleTimeString('pt-BR')}</td>
+            <td>${p.clienteInfo.nome}</td>
+            <td>${p.itens.map(i => `${i.qtd}x ${i.nome}`).join('<br>')}</td>
+            <td>R$ ${p.total.toFixed(2)}</td>
+            <td><span class="status ${p.status.toLowerCase().replace(/\s+/g, '-')}">${p.status}</span></td>
+            <td><select class="status-select" data-pedido-id="${p.id}">${['Recebido', 'Em preparação', 'Saiu para entrega', 'Entregue'].map(s => `<option value="${s}" ${p.status === s ? 'selected' : ''}>${s}</option>`).join('')}</select></td>
+            <td>${p.entregadorId ? 'Atribuído' : `<button class="btn btn-sm btn-atribuir" data-pedido-id="${p.id}">Atribuir</button>`}</td>
+        `;
+        pedidosTableBodyEl.appendChild(tr);
+    });
+}
 
-// --- 6. LISTENERS DE EVENTOS (COMPLETOS E FUNCIONAIS) ---
+function renderizarTabelaCardapio(itens) {
+    tabelaCardapioBody.innerHTML = '';
+    itens.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.dataset.itemId = item.id;
+        tr.innerHTML = `
+            <td><img src="${item.imageUrl || 'https://placehold.co/60x60/E2E8F0/1A202C?text=Foto'}" alt="${item.nome}" width="60" height="60" style="object-fit: cover; border-radius: 4px;"></td>
+            <td>${item.nome}</td>
+            <td>R$ ${item.preco.toFixed(2)}</td>
+            <td><label class="switch"><input type="checkbox" class="disponibilidade-switch" data-item-id="${item.id}" ${item.disponivel ? 'checked' : ''}><span class="slider"></span></label></td>
+            <td><button class="btn-editar-item" data-item-id="${item.id}">Editar</button><button class="btn-apagar-item" data-item-id="${item.id}">Apagar</button></td>
+        `;
+        tabelaCardapioBody.appendChild(tr);
+    });
+}
 
+function renderizarEntregadores(entregadores) {
+    listaEntregadoresEl.innerHTML = '';
+    selectEntregador.innerHTML = '<option value="">Selecione um entregador</option>';
+    entregadores.forEach(e => {
+        const li = document.createElement('li');
+        li.dataset.entregadorId = e.id;
+        li.innerHTML = `<span>${e.nome} (${e.email})</span><button class="btn-apagar-entregador" data-entregador-id="${e.id}">Apagar</button>`;
+        listaEntregadoresEl.appendChild(li);
+        selectEntregador.innerHTML += `<option value="${e.id}">${e.nome}</option>`;
+    });
+}
+
+// --- 7. LISTENERS DE EVENTOS ---
 mainContent.addEventListener('click', async (e) => {
     const target = e.target;
     const pedidoId = target.closest('tr')?.dataset.pedidoId;
     const itemId = target.closest('tr')?.dataset.itemId;
     const entregadorId = target.closest('li')?.dataset.entregadorId;
-
+    
     if (target.classList.contains('btn-atribuir')) {
         pedidoParaAtribuir = pedidoId;
         modalAtribuir.classList.add('visible');
@@ -188,7 +246,7 @@ switchStatusLoja.addEventListener('change', async (e) => {
     await updateDoc(doc(db, "restaurantes", meuRestauranteId), { lojaAberta: e.target.checked });
 });
 
-// --- 7. INICIALIZAÇÃO DO PAINEL ---
+// --- 8. INICIALIZAÇÃO DO PAINEL ---
 async function inicializarPainelRestaurante() {
     onAuthChange(async (user) => {
         if (user) {
@@ -196,7 +254,7 @@ async function inicializarPainelRestaurante() {
             if (role === 'restaurante') {
                 meuRestauranteId = user.uid;
                 const restauranteRef = doc(db, "restaurantes", meuRestauranteId);
-
+                
                 onSnapshot(restauranteRef, (docSnap) => {
                     if (docSnap.exists()) {
                         restauranteData = docSnap.data();
@@ -207,23 +265,24 @@ async function inicializarPainelRestaurante() {
                         labelStatusLoja.textContent = lojaAberta ? 'Loja Aberta' : 'Loja Fechada';
                     } else {
                         alert("Erro: não foi possível encontrar os dados do seu restaurante.");
-                        logoutUser(); window.location.href = '/paginas/login.html';
+                        logoutUser();
+                        window.location.href = '/paginas/login.html';
                     }
                 });
-
-                onSnapshot(query(collection(db, "restaurantes", meuRestauranteId, "pedidos")), s => renderizarPedidos(s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.timestamp-a.timestamp)));
-                onSnapshot(collection(db, "restaurantes", meuRestauranteId, "cardapio"), s => renderizarTabelaCardapio(s.docs.map(d=>({id:d.id,...d.data()}))));
+                
+                onSnapshot(query(collection(db, "restaurantes", meuRestauranteId, "pedidos")), s => renderizarPedidos(s.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => b.timestamp - a.timestamp)));
+                onSnapshot(collection(db, "restaurantes", meuRestauranteId, "cardapio"), s => renderizarTabelaCardapio(s.docs.map(d => ({ id: d.id, ...d.data() }))));
                 onSnapshot(query(collection(db, "utilizadores"), where("restauranteId", "==", meuRestauranteId), where("role", "==", "entregador")), s => {
-                    entregadoresDisponiveis = s.docs.map(d=>({id:d.id,...d.data()}));
+                    entregadoresDisponiveis = s.docs.map(d => ({ id: d.id, ...d.data() }));
                     renderizarEntregadores(entregadoresDisponiveis);
                 });
                 verificarMensagens(restauranteData);
-
+                
             } else { window.location.href = '/paginas/login.html'; }
         } else { window.location.href = '/paginas/login.html'; }
     });
 }
 
-btnLogout.addEventListener('click', () => { logoutUser(); window.location.href = '/paginas/login.html'; });
+btnLogout.addEventListener('click', () => { logoutUser();
+    window.location.href = '/paginas/login.html'; });
 document.addEventListener('DOMContentLoaded', inicializarPainelRestaurante);
-

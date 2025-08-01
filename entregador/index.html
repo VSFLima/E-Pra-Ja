@@ -5,46 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel do Entregador - E-Pra-Já</title>
     
-    <!-- CSS (caminhos corrigidos) -->
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <link rel="stylesheet" href="../assets/css/panel.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="../assets/css/style.css?v=4.1">
+    <link rel="stylesheet" href="../assets/css/panel.css?v=4.1">
 
     <!-- Ícones (Font Awesome) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
-
-    <!-- Estilos específicos para este painel (adicionados para o novo card) -->
-    <style>
-        .pedido-card {
-            background-color: var(--cor-branco);
-            border-radius: var(--borda-radius);
-            box-shadow: var(--sombra-padrao);
-            margin-bottom: 1.5rem;
-            border-left: 5px solid var(--cor-primaria);
-        }
-        .pedido-card .card-body {
-            padding: 1rem 1.5rem;
-        }
-        .pedido-card .card-body p {
-            margin: 0.5rem 0;
-        }
-        .btn-entregue {
-            width: 100%;
-            margin-top: 1rem;
-            padding: 12px;
-            background-color: var(--cor-sucesso);
-            color: var(--cor-branco);
-        }
-        .btn-entregue:hover {
-            background-color: #38A169;
-        }
-    </style>
 </head>
 <body class="panel-body">
 
-    <!-- BARRA LATERAL DE NAVEGAÇÃO -->
-    <aside class="sidebar">
+    <!-- BARRA LATERAL (MENU GAVETA) -->
+    <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <a href="#" class="logo">E-Pra<span>Já</span></a>
+            <a href="index.html" class="logo">
+                <img src="../assets/images/logo.svg" alt="Logo E-Pra Já">
+            </a>
         </div>
         <nav class="sidebar-nav">
             <ul>
@@ -64,24 +39,45 @@
         </div>
     </aside>
 
-    <!-- CONTEÚDO PRINCIPAL -->
-    <main class="main-content">
-        <header class="page-header">
-            <h1>Minhas Entregas</h1>
-            <p>Olá, <span id="nome-entregador">carregando...</span>! Aqui estão os pedidos atribuídos a você.</p>
+    <!-- WRAPPER PRINCIPAL PARA O CONTEÚDO -->
+    <div class="main-wrapper">
+        <!-- CABEÇALHO SUPERIOR MÓVEL -->
+        <header class="mobile-header">
+            <button class="menu-toggle" id="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <a href="index.html" class="logo">
+                <img src="../assets/images/logo.svg" alt="Logo E-Pra Já">
+            </a>
         </header>
 
-        <!-- Lista de Pedidos -->
-        <section class="dashboard-content">
-            <div id="lista-pedidos-entregador">
-                <!-- Os cartões de pedido serão inseridos aqui pelo entregador.js -->
-                <p>Carregando suas entregas...</p>
-            </div>
-        </section>
-    </main>
+        <!-- CONTEÚDO PRINCIPAL (COMPLETO) -->
+        <main class="main-content">
+            <header class="page-header">
+                <h1>Minhas Entregas</h1>
+                <p>Olá, <span id="nome-entregador">carregando...</span>! Aqui estão os pedidos atribuídos a você.</p>
+            </header>
 
-    <!-- Script do Painel (caminho relativo) -->
-    <script type="module" src="entregador.js"></script>
+            <!-- Lista de Pedidos (COMPLETA) -->
+            <section class="dashboard-content">
+                <div id="lista-pedidos-entregador">
+                    <!-- Os cartões de pedido serão inseridos aqui pelo entregador.js -->
+                    <p>Carregando suas entregas...</p>
+                </div>
+            </section>
+        </main>
+
+        <!-- RODAPÉ DO PAINEL -->
+        <footer class="main-content-footer">
+            <p>&copy; 2025 E-Pra-Já. Painel do Entregador.</p>
+        </footer>
+    </div>
+
+    <!-- OVERLAY PARA O FUNDO DO MENU MÓVEL -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Script do Painel -->
+    <script type="module" src="entregador.js?v=4.1"></script>
 </body>
 </html>
 

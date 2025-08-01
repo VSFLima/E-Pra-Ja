@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel do Gestor - E-Pra-Já</title>
 
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <link rel="stylesheet" href="../assets/css/panel.css">
+    <link rel="stylesheet" href="../assets/css/style.css?v=4.1">
+    <link rel="stylesheet" href="../assets/css/panel.css?v=4.1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
 </head>
 <body class="panel-body">
 
-    <!-- BARRA LATERAL DE NAVEGAÇÃO -->
-    <aside class="sidebar">
+    <!-- BARRA LATERAL (MENU GAVETA) -->
+    <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <a href="index.html" class="logo">
                 <img src="../assets/images/logo.svg" alt="Logo E-Pra Já">
@@ -31,90 +31,111 @@
         </div>
     </aside>
 
-    <!-- CONTEÚDO PRINCIPAL -->
-    <main class="main-content">
-        <header class="page-header">
-            <h1>Dashboard do Gestor</h1>
-            <p>Bem-vindo, <strong id="nome-utilizador">admin</strong>.</p>
+    <!-- WRAPPER PRINCIPAL PARA O CONTEÚDO -->
+    <div class="main-wrapper">
+        <!-- CABEÇALHO SUPERIOR MÓVEL -->
+        <header class="mobile-header">
+            <button class="menu-toggle" id="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <a href="index.html" class="logo">
+                <img src="../assets/images/logo.svg" alt="Logo E-Pra Já">
+            </a>
         </header>
 
-        <!-- DASHBOARD FINANCEIRO (v4) -->
-        <section id="dashboard" class="metric-cards">
-            <div class="metric-card">
-                <i class="fa-solid fa-dollar-sign icon"></i>
-                <div class="info">
-                    <div id="total-arrecadado" class="number">R$ 0,00</div>
-                    <div class="label">Total Arrecadado (Mês)</div>
-                </div>
-            </div>
-            <div class="metric-card">
-                <i class="fa-solid fa-clock-rotate-left icon"></i>
-                <div class="info">
-                    <div id="total-pendente" class="number">R$ 0,00</div>
-                    <div class="label">Total Pendente</div>
-                </div>
-            </div>
-            <div class="metric-card">
-                <i class="fa-solid fa-hourglass-start icon"></i>
-                <div class="info">
-                    <div id="total-em-teste" class="number">R$ 0,00</div>
-                    <div class="label">Potencial (Em Teste)</div>
-                </div>
-            </div>
-        </section>
+        <!-- CONTEÚDO PRINCIPAL -->
+        <main class="main-content">
+            <header class="page-header">
+                <h1>Dashboard do Gestor</h1>
+                <p>Bem-vindo, <strong id="nome-utilizador">admin</strong>.</p>
+            </header>
 
-        <!-- CONTROLE FINANCEIRO (v4) -->
-        <section class="dashboard-card">
-            <div class="card-header"><h3>Controle Financeiro</h3></div>
-            <div class="management-form">
-                <div style="grid-column: 1 / -1;">
-                    <h4>Solicitações de Desbloqueio por Confiança</h4>
-                    <div class="table-wrapper">
-                        <table class="data-table">
-                            <thead><tr><th>Restaurante</th><th>ID do Dono</th><th>Ação</th></tr></thead>
-                            <tbody id="desbloqueio-body"></tbody>
-                        </table>
+            <!-- DASHBOARD FINANCEIRO -->
+            <section id="dashboard" class="metric-cards">
+                <div class="metric-card">
+                    <i class="fa-solid fa-dollar-sign icon"></i>
+                    <div class="info">
+                        <div id="total-arrecadado" class="number">R$ 0,00</div>
+                        <div class="label">Total Arrecadado (Mês)</div>
                     </div>
                 </div>
-                <div style="grid-column: 1 / -1;">
-                    <h4>Restaurantes com Pagamento Pendente</h4>
-                     <div class="table-wrapper">
-                        <table class="data-table">
-                            <thead><tr><th>Restaurante</th><th>Acesso Válido Até</th></tr></thead>
-                            <tbody id="pendentes-body"></tbody>
-                        </table>
+                <div class="metric-card">
+                    <i class="fa-solid fa-clock-rotate-left icon"></i>
+                    <div class="info">
+                        <div id="total-pendente" class="number">R$ 0,00</div>
+                        <div class="label">Total Pendente</div>
                     </div>
                 </div>
-            </div>
-        </section>
+                <div class="metric-card">
+                    <i class="fa-solid fa-hourglass-start icon"></i>
+                    <div class="info">
+                        <div id="total-em-teste" class="number">R$ 0,00</div>
+                        <div class="label">Potencial (Em Teste)</div>
+                    </div>
+                </div>
+            </section>
 
-        <!-- GESTÃO DE RESTAURANTES (v4) -->
-        <section id="restaurantes" class="dashboard-card">
-            <div class="card-header">
-                <h3>Gerenciar Restaurantes</h3>
-                <a href="gerenciar-restaurante.html" class="btn btn-primario">Criar Novo Restaurante</a>
-            </div>
-            <div class="table-wrapper">
-                <table class="data-table">
-                    <thead><tr><th>Nome</th><th>Status</th><th>Pagamento</th><th>Ações</th></tr></thead>
-                    <tbody id="lista-restaurantes-body"></tbody>
-                </table>
-            </div>
-        </section>
+            <!-- CONTROLE FINANCEIRO -->
+            <section class="dashboard-card">
+                <div class="card-header"><h3>Controle Financeiro</h3></div>
+                <div class="management-form">
+                    <div style="grid-column: 1 / -1;">
+                        <h4>Solicitações de Desbloqueio por Confiança</h4>
+                        <div class="table-wrapper">
+                            <table class="data-table">
+                                <thead><tr><th>Restaurante</th><th>ID do Dono</th><th>Ação</th></tr></thead>
+                                <tbody id="desbloqueio-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div style="grid-column: 1 / -1;">
+                        <h4>Restaurantes com Pagamento Pendente</h4>
+                         <div class="table-wrapper">
+                            <table class="data-table">
+                                <thead><tr><th>Restaurante</th><th>Acesso Válido Até</th></tr></thead>
+                                <tbody id="pendentes-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-        <!-- GESTÃO DE USUÁRIOS (v4) -->
-        <section id="usuarios" class="dashboard-card">
-            <div class="card-header"><h3>Gerenciar Usuários</h3></div>
-            <div class="table-wrapper">
-                <table class="data-table">
-                    <thead><tr><th>E-mail</th><th>Nome</th><th>Perfil</th><th>Status</th><th>Ações</th></tr></thead>
-                    <tbody id="lista-utilizadores-body"></tbody>
-                </table>
-            </div>
-        </section>
-    </main>
+            <!-- GESTÃO DE RESTAURANTES -->
+            <section id="restaurantes" class="dashboard-card">
+                <div class="card-header">
+                    <h3>Gerenciar Restaurantes</h3>
+                    <a href="gerenciar-restaurante.html" class="btn btn-primario">Criar Novo Restaurante</a>
+                </div>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead><tr><th>Nome</th><th>Status</th><th>Pagamento</th><th>Ações</th></tr></thead>
+                        <tbody id="lista-restaurantes-body"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- GESTÃO DE USUÁRIOS -->
+            <section id="usuarios" class="dashboard-card">
+                <div class="card-header"><h3>Gerenciar Usuários</h3></div>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead><tr><th>E-mail</th><th>Nome</th><th>Perfil</th><th>Status</th><th>Ações</th></tr></thead>
+                        <tbody id="lista-utilizadores-body"></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+        
+        <!-- RODAPÉ DO PAINEL -->
+        <footer class="main-content-footer">
+            <p>&copy; 2025 E-Pra-Já. Painel de Gestão.</p>
+        </footer>
+    </div>
+
+    <!-- OVERLAY PARA O FUNDO DO MENU MÓVEL -->
+    <div class="overlay" id="overlay"></div>
     
-    <!-- (NOVO E COMPLETO) MODAL DE GERENCIAMENTO DE ACESSO -->
+    <!-- MODAL DE GERENCIAMENTO DE ACESSO -->
     <div class="modal-overlay" id="modal-acesso">
         <div class="modal-container">
             <header class="modal-header">
@@ -133,8 +154,7 @@
         </div>
     </div>
 
-    <script type="module" src="admin.js"></script>
+    <script type="module" src="admin.js?v=4.1"></script>
 </body>
 </html>
 
- 

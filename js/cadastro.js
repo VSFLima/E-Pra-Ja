@@ -1,10 +1,11 @@
 /* E-Pra-Já v4: Script da Página de Cadastro de Restaurante (cadastro.js) */
 /* Localização: /js/cadastro.js */
 
-// --- 1. IMPORTAÇÕES ---
+// --- 1. IMPORTAÇÕES (CORRIGIDO) ---
+// Agora importa o 'auth' do firebase-config e as funções de criação/login do SDK
 import { auth, db } from '../firebase-config.js';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
-import { doc, setDoc, collection, Timestamp, writeBatch, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+import { doc, setDoc, collection, Timestamp, writeBatch } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -16,71 +17,51 @@ document.addEventListener('DOMContentLoaded', () => {
     const messageContainer = document.getElementById('message-container');
     const possuiCnpjRadios = document.querySelectorAll('input[name="possuiCnpj"]');
     const cnpjSection = document.getElementById('cnpj-section');
-    const cpfInput = document.getElementById('cpf');
     const cnpjInput = document.getElementById('cnpj');
     const nomeEmpresaInput = document.getElementById('nome-empresa');
 
-    // --- 3. FUNÇÕES DE VALIDAÇÃO E MÁSCARA ---
-    // (As funções de máscara e validação de formato estão mantidas e corretas)
-    const applyMask = (input, maskFunction) => { /* ... */ };
-    const maskCPF = (value) => { /* ... */ };
-    const maskCNPJ = (value) => { /* ... */ };
-    applyMask(cpfInput, maskCPF);
-    applyMask(cnpjInput, maskCNPJ);
-    const validateCPF = (cpf) => /^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(cpf);
-    const validateCNPJ = (cnpj) => /^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/.test(cnpj);
+    // --- 3. FUNÇÃO DE EXIBIR MENSAGEM ---
+    const showMessage = (message, isError = false) => {
+        messageContainer.textContent = message;
+        messageContainer.style.display = 'block';
+        messageContainer.className = isError ? 'message error' : 'message success';
+    };
 
-    // --- 4. FUNÇÃO DE EXIBIR MENSAGEM ---
-    const showMessage = (message, isError = false) => { /* ... (código mantido) ... */ };
+    // --- 4. LÓGICA CONDICIONAL DO FORMULÁRIO ---
+    possuiCnpjRadios.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            if (e.target.value === 'sim') {
+                cnpjSection.style.display = 'block';
+                cnpjInput.required = true;
+                nomeEmpresaInput.required = true;
+            } else {
+                cnpjSection.style.display = 'none';
+                cnpjInput.required = false;
+                nomeEmpresaInput.required = false;
+            }
+        });
+    });
 
-    // --- 5. LÓGICA CONDICIONAL DO FORMULÁRIO ---
-    possuiCnpjRadios.forEach(radio => { /* ... (código mantido) ... */ });
-
-    // --- 6. EVENT LISTENER DO FORMULÁRIO (COM VALIDAÇÃO DE DUPLICIDADE) ---
+    // --- 5. EVENT LISTENER DO FORMULÁRIO (CORRIGIDO) ---
     cadastroForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         submitBtn.disabled = true;
-        submitBtn.textContent = 'Verificando dados...';
+        submitBtn.textContent = 'Processando...';
 
+        const nomeResponsavel = cadastroForm['nome-responsavel'].value;
         const cpf = cadastroForm['cpf'].value;
+        const nomeRestaurante = cadastroForm['nome-restaurante'].value;
+        const endereco = cadastroForm['endereco'].value;
         const possuiCnpj = cadastroForm['possuiCnpj'].value === 'sim';
-        const cnpj = cadastroForm['cnpj'].value;
-
-        // Validação de formato
-        if (!validateCPF(cpf)) {
-            showMessage('Por favor, insira um CPF válido.', true);
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Criar Conta e Iniciar Teste Grátis';
-            return;
-        }
-        if (possuiCnpj && !validateCNPJ(cnpj)) {
-            showMessage('Por favor, insira um CNPJ válido.', true);
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Criar Conta e Iniciar Teste Grátis';
-            return;
-        }
+        const email = cadastroForm['email'].value;
+        const password = cadastroForm['password'].value;
 
         try {
-            // (NOVO E CRÍTICO) Passo 1: Verificar se o CPF já existe
-            const q = query(collection(db, "utilizadores"), where("cpf", "==", cpf));
-            const querySnapshot = await getDocs(q);
-            if (!querySnapshot.empty) {
-                throw new Error('Este CPF já está cadastrado no sistema.');
-            }
-
-            submitBtn.textContent = 'Processando...';
-
-            const nomeResponsavel = cadastroForm['nome-responsavel'].value;
-            const nomeRestaurante = cadastroForm['nome-restaurante'].value;
-            const endereco = cadastroForm['endereco'].value;
-            const email = cadastroForm['email'].value;
-            const password = cadastroForm['password'].value;
-
-            // Passo 2: Criar o usuário no Auth
+            // Passo 1: Criar o usuário no Firebase Authentication (AGORA FUNCIONAL)
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
-            // Passo 3: Preparar os dados para o Firestore
+            // Passo 2: Preparar os dados para o Firestore
             const dadosUsuario = {
                 email: user.email, nome: nomeResponsavel, cpf: cpf,
                 role: "restaurante", status: "ativo"
@@ -90,30 +71,34 @@ document.addEventListener('DOMContentLoaded', () => {
             const dadosRestaurante = {
                 donoId: user.uid, nome: nomeRestaurante, enderecoCompleto: endereco,
                 possuiCnpj: possuiCnpj,
-                cnpj: possuiCnpj ? cnpj : null,
+                cnpj: possuiCnpj ? cadastroForm['cnpj'].value : null,
                 nomeEmpresa: possuiCnpj ? cadastroForm['nome-empresa'].value : null,
                 accessValidUntil: Timestamp.fromDate(trialEndDate),
                 status: "teste", statusPagamento: "pendente", solicitouDesbloqueio: false,
                 info: { telefone: "", horarios: "", logoUrl: "" },
             };
 
-            // Passo 4: Salvar os dados no Firestore
+            // Passo 3: Salvar os dados no Firestore
             const batch = writeBatch(db);
-            batch.set(doc(db, "utilizadores", user.uid), dadosUsuario);
-            batch.set(doc(db, "restaurantes", user.uid), dadosRestaurante);
+            const userDocRef = doc(db, "utilizadores", user.uid);
+            batch.set(userDocRef, dadosUsuario);
+            const restauranteDocRef = doc(db, "restaurantes", user.uid);
+            batch.set(restauranteDocRef, dadosRestaurante);
             await batch.commit();
             
-            // Passo 5: Fazer o login automático
+            // Passo 4: Fazer o login automático do novo usuário
             await signInWithEmailAndPassword(auth, email, password);
             
             showMessage('Conta criada com sucesso! Redirecionando para o seu painel...', false);
 
-            // Passo 6: Redirecionar para o painel
-            setTimeout(() => { window.location.href = '/restaurante/'; }, 2000);
+            // Passo 5: Redirecionar para o painel do restaurante
+            setTimeout(() => {
+                window.location.href = '/restaurante/';
+            }, 2000);
 
         } catch (error) {
             console.error("Erro no processo de cadastro:", error);
-            let friendlyMessage = error.message; // Usa a mensagem de erro específica por padrão
+            let friendlyMessage = "Ocorreu um erro. Tente novamente.";
             if (error.code === 'auth/email-already-in-use') {
                 friendlyMessage = "Este endereço de e-mail já está sendo utilizado.";
             }
