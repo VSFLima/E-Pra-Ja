@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -6,15 +7,25 @@
     <title>E-Pra-Já - Sua plataforma de cardápio e pedidos online</title>
     
     <!-- CSS com versionamento para forçar a atualização -->
-    <link rel="stylesheet" href="assets/css/style.css?v=4.0">
-
-    <!-- Ícones (Font Awesome) -->
+    <link rel="stylesheet" href="assets/css/style.css?v=4.2">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
 </head>
 <body>
 
-    <!-- CABEÇALHO GLOBAL -->
-    <div id="global-header-placeholder"></div>
+    <!-- CABEÇALHO COMPLETO (NÃO MAIS UM PLACEHOLDER) -->
+    <header class="global-header">
+        <div class="container navbar">
+            <a href="/" class="nav-logo">
+                <img src="assets/images/logo.svg" alt="Logo E-Pra Já">
+            </a>
+            <nav class="nav-links">
+                <a href="#como-funciona">Como Funciona</a>
+                <a href="#precos">Preços</a>
+                <!-- O id="nav-action-btn" é crucial para o main.js funcionar -->
+                <a href="paginas/login.html" class="btn" id="nav-action-btn">Login</a>
+            </nav>
+        </div>
+    </header>
 
     <main class="page-content">
         <!-- SEÇÃO PRINCIPAL (HERO) -->
@@ -102,12 +113,34 @@
         </section>
     </main>
 
-    <!-- RODAPÉ GLOBAL -->
-    <div id="global-footer-placeholder"></div>
+    <!-- RODAPÉ COMPLETO (NÃO MAIS UM PLACEHOLDER) -->
+    <footer class="global-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <a href="/" class="logo">
+                        <img src="assets/images/logo.svg" alt="Logo E-Pra Já" style="height: 35px; filter: brightness(0) invert(1);">
+                    </a>
+                    <p style="margin-top: 1rem;">Simplificando a gestão de pedidos para o seu negócio.</p>
+                </div>
+                <div class="footer-contact">
+                    <h4>Precisa de ajuda?</h4>
+                    <p><a href="mailto:contato@epraja.com.br">contato@epraja.com.br</a></p>
+                </div>
+                <div class="footer-social">
+                    <h4>Siga-nos</h4>
+                    <a href="#" aria-label="Instagram" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="Facebook" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 E-Pra-Já. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
 
     <!-- Scripts com versionamento para forçar a atualização -->
-    <script type="module" src="js/components.js?v=4.0"></script>
-    <script type="module" src="js/main.js?v=4.0"></script>
+    <script type="module" src="js/main.js?v=4.2"></script>
 </body>
 </html>
 
