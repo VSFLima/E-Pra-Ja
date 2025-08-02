@@ -5,17 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enviar Mensagem - Painel do Gestor</title>
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <link rel="stylesheet" href="../assets/css/panel.css">
-
-    <!-- Ícones (Font Awesome) -->
+    <link rel="stylesheet" href="../assets/css/style.css?v=4.2">
+    <link rel="stylesheet" href="../assets/css/panel.css?v=4.2">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
 </head>
 <body class="panel-body">
 
-    <!-- BARRA LATERAL DE NAVEGAÇÃO -->
-    <aside class="sidebar">
+    <!-- BARRA LATERAL (MENU GAVETA) -->
+    <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <a href="index.html" class="logo">
                 <img src="../assets/images/logo.svg" alt="Logo E-Pra Já">
@@ -26,60 +23,75 @@
                 <li><a href="index.html#dashboard"><i class="fa-solid fa-chart-line icon"></i><span>Dashboard</span></a></li>
                 <li><a href="index.html#restaurantes"><i class="fa-solid fa-store icon"></i><span>Restaurantes</span></a></li>
                 <li><a href="index.html#usuarios"><i class="fa-solid fa-users icon"></i><span>Usuários</span></a></li>
-                <li><a href="index.html#indicacoes"><i class="fa-solid fa-gift icon"></i><span>Indicações</span></a></li>
-                <!-- Ação de enviar mensagem pode ser considerada parte do Dashboard ou uma nova aba no futuro -->
+                <!-- Link ativo para a página de mensagens -->
+                <li><a href="enviar-mensagem.html" class="active"><i class="fa-solid fa-paper-plane icon"></i><span>Mensagens</span></a></li>
             </ul>
         </nav>
         <div class="sidebar-footer">
-             <a href="#" id="btn-logout-mensagem"><i class="fa-solid fa-right-from-bracket icon"></i><span>Sair</span></a>
+             <a href="#" id="btn-logout"><i class="fa-solid fa-right-from-bracket icon"></i><span>Sair</span></a>
         </div>
     </aside>
 
-    <!-- CONTEÚDO PRINCIPAL -->
-    <main class="main-content">
-        <header class="page-header">
-            <h1>Enviar Mensagem em Massa</h1>
-            <a href="index.html" class="btn">Voltar para o Dashboard</a>
+    <!-- WRAPPER PRINCIPAL PARA O CONTEÚDO -->
+    <div class="main-wrapper">
+        <!-- CABEÇALHO SUPERIOR MÓVEL -->
+        <header class="mobile-header">
+            <button class="menu-toggle" id="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <a href="index.html" class="logo">
+                <img src="../assets/images/logo.svg" alt="Logo E-Pra Já">
+            </a>
         </header>
 
-        <section class="dashboard-card">
-            <div class="card-header">
-                <h3>Compositor de Mensagens</h3>
-            </div>
-            <p style="margin: 1rem 0;">A mensagem que você enviar aqui aparecerá como um pop-up para os restaurantes selecionados quando eles acessarem o painel.</p>
+        <!-- CONTEÚDO PRINCIPAL -->
+        <main class="main-content">
+            <header class="page-header">
+                <h1>Enviar Mensagem em Massa</h1>
+                <a href="index.html" class="btn">Voltar para o Dashboard</a>
+            </header>
 
-            <div id="message-container" class="message" style="display: none;"></div>
-            
-            <form id="form-enviar-mensagem" class="management-form">
-                <div class="form-group" style="grid-column: 1 / -1;">
-                    <label for="grupo-alvo">Enviar para o grupo:</label>
-                    <select id="grupo-alvo" required>
-                        <option value="todos">Todos os Restaurantes</option>
-                        <option value="teste">Restaurantes em Período de Teste</option>
-                        <option value="pendente">Restaurantes com Pagamento Pendente</option>
-                    </select>
+            <section class="dashboard-card">
+                <div class="card-header">
+                    <h3>Compositor de Mensagens</h3>
                 </div>
+                <p style="margin: 1rem 0;">A mensagem que você enviar aqui aparecerá como um pop-up para os restaurantes selecionados quando eles acessarem o painel.</p>
 
-                <div class="form-group" style="grid-column: 1 / -1;">
-                    <label for="texto-mensagem">Mensagem:</label>
-                    <textarea id="texto-mensagem" rows="6" required placeholder="Escreva sua mensagem aqui..."></textarea>
-                </div>
+                <div id="message-container" class="message" style="display: none;"></div>
+                
+                <form id="form-enviar-mensagem">
+                    <div class="form-group">
+                        <label for="grupo-alvo">Enviar para o grupo:</label>
+                        <select id="grupo-alvo" required>
+                            <option value="todos">Todos os Restaurantes</option>
+                            <option value="teste">Restaurantes em Período de Teste</option>
+                            <option value="pendente">Restaurantes com Pagamento Pendente</option>
+                        </select>
+                    </div>
 
-                <div class="form-group" style="grid-column: 1 / -1;">
-                    <button type="submit" class="btn btn-primario">Enviar Mensagem</button>
-                </div>
-            </form>
-        </section>
-    </main>
+                    <div class="form-group">
+                        <label for="texto-mensagem">Mensagem:</label>
+                        <textarea id="texto-mensagem" rows="6" required placeholder="Escreva sua mensagem aqui..."></textarea>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 1.5rem;">
+                        <button type="submit" class="btn btn-primario">Enviar Mensagem</button>
+                    </div>
+                </form>
+            </section>
+        </main>
+        
+        <!-- RODAPÉ DO PAINEL -->
+        <footer class="main-content-footer">
+            <p>&copy; 2025 E-Pra-Já. Painel de Gestão.</p>
+        </footer>
+    </div>
+
+    <!-- OVERLAY PARA O FUNDO DO MENU MÓVEL -->
+    <div class="overlay" id="overlay"></div>
     
     <!-- Script da Página -->
-    <script type="module" src="enviar-mensagem.js"></script>
-    <script>
-        // Script simples para o botão de logout
-        document.getElementById('btn-logout-mensagem').addEventListener('click', () => {
-            window.location.href = '../paginas/login.html'; 
-        });
-    </script>
+    <script type="module" src="enviar-mensagem.js?v=4.2"></script>
 </body>
 </html>
 
