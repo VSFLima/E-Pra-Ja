@@ -1,3 +1,4 @@
+
 /* E-Pra-Já v4: Serviço de Autenticação (auth.js) */
 /* Localização: /js/services/auth.js */
 
@@ -86,7 +87,7 @@ export const getUserRole = async (uid) => {
     const docSnap = await getDoc(userDocRef);
     return docSnap.exists() ? docSnap.data().role : null;
   } catch (error) {
-    console.error("Erro ao buscar perfil do usuário:", error);
+    console.error("Erro ao buscar perfil do usuário:", error.message);
     throw error;
   }
 };
@@ -98,7 +99,7 @@ export const sendPasswordReset = async (email) => {
     try {
         await sendPasswordResetEmail(auth, email);
     } catch (error) {
-        console.error("Erro ao enviar e-mail de redefinição:", error);
+        console.error("Erro ao enviar e-mail de redefinição:", error.message);
         throw error;
     }
 };
