@@ -120,7 +120,9 @@ export const salvarItemCardapio = async (restauranteId, itemId, itemData) => {
         if (itemId) {
             await updateDoc(doc(cardapioRef, itemId), itemData);
         } else {
-            await addDoc(cardapioRef, itemData);
+            const novoItemRef = doc(cardapioRef);
+            await setDoc(novoItemRef, itemData);
+            return novoItemRef.id;
         }
     } catch (error) { console.error("Erro ao salvar item do cardápio:", error); throw error; }
 };
@@ -206,4 +208,3 @@ export const salvarPedidoNoHistoricoCliente = async (userId, dadosPedido, nomeRe
     } catch (error) { console.error("Erro ao salvar no histórico:", error); }
 };
 
- 

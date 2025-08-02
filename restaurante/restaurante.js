@@ -4,15 +4,15 @@
 // --- 1. IMPORTAÇÕES ---
 import { db } from '../js/firebase-config.js';
 import { onAuthChange, getUserRole, logoutUser } from '../js/services/auth.js';
-import { 
-    criarUsuarioEntregador, 
-    apagarUsuarioCompleto, 
+import {
+    criarUsuarioEntregador,
+    apagarUsuarioCompleto,
     solicitarDesbloqueio,
     salvarItemCardapio,
     apagarItemCardapio,
     atualizarStatusPedido,
     atribuirEntregadorPedido
-} from '../js/services/firestore.js'; 
+} from '../js/services/firestore.js';
 import { doc, getDoc, collection, query, where, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
 
 // --- 2. ELEMENTOS DO DOM ---
@@ -64,7 +64,7 @@ function verificarAssinatura(restData) {
     if (!restData.accessValidUntil) return;
     const hoje = new Date();
     const dataValidade = restData.accessValidUntil.toDate();
-
+    
     if (hoje > dataValidade) {
         mainContent.style.filter = 'blur(5px)';
         billingPopup.classList.add('visible');
@@ -154,7 +154,7 @@ mainContent.addEventListener('click', async (e) => {
     const pedidoId = target.closest('tr')?.dataset.pedidoId;
     const itemId = target.closest('tr')?.dataset.itemId;
     const entregadorId = target.closest('li')?.dataset.entregadorId;
-
+    
     if (target.classList.contains('btn-atribuir')) {
         pedidoParaAtribuir = pedidoId;
         modalAtribuir.classList.add('visible');
@@ -258,7 +258,7 @@ async function inicializarPainelRestaurante() {
             if (role === 'restaurante') {
                 meuRestauranteId = user.uid;
                 const restauranteRef = doc(db, "restaurantes", meuRestauranteId);
-
+                
                 onSnapshot(restauranteRef, (docSnap) => {
                     if (docSnap.exists()) {
                         restauranteData = docSnap.data();
@@ -269,24 +269,24 @@ async function inicializarPainelRestaurante() {
                         labelStatusLoja.textContent = lojaAberta ? 'Loja Aberta' : 'Loja Fechada';
                     } else {
                         alert("Erro: não foi possível encontrar os dados do seu restaurante.");
-                        logoutUser(); window.location.href = '/paginas/login.html';
+                        logoutUser();
+                        window.location.href = '/paginas/login.html';
                     }
                 });
-
-                onSnapshot(query(collection(db, "restaurantes", meuRestauranteId, "pedidos")), s => renderizarPedidos(s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.timestamp-a.timestamp)));
-                onSnapshot(collection(db, "restaurantes", meuRestauranteId, "cardapio"), s => renderizarTabelaCardapio(s.docs.map(d=>({id:d.id,...d.data()}))));
+                
+                onSnapshot(query(collection(db, "restaurantes", meuRestauranteId, "pedidos")), s => renderizarPedidos(s.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => b.timestamp - a.timestamp)));
+                onSnapshot(collection(db, "restaurantes", meuRestauranteId, "cardapio"), s => renderizarTabelaCardapio(s.docs.map(d => ({ id: d.id, ...d.data() }))));
                 onSnapshot(query(collection(db, "utilizadores"), where("restauranteId", "==", meuRestauranteId), where("role", "==", "entregador")), s => {
-                    entregadoresDisponiveis = s.docs.map(d=>({id:d.id,...d.data()}));
+                    entregadoresDisponiveis = s.docs.map(d => ({ id: d.id, ...d.data() }));
                     renderizarEntregadores(entregadoresDisponiveis);
                 });
                 verificarMensagens(restauranteData);
-
+                
             } else { window.location.href = '/paginas/login.html'; }
         } else { window.location.href = '/paginas/login.html'; }
     });
 }
 
-btnLogout.addEventListener('click', () => { logoutUser(); window.location.href = '/paginas/login.html'; });
+btnLogout.addEventListener('click', () => { logoutUser();
+    window.location.href = '/paginas/login.html'; });
 document.addEventListener('DOMContentLoaded', inicializarPainelRestaurante);
-
- 

@@ -175,4 +175,3 @@ const inicializarPainelEntregador = () => {
 
 document.addEventListener('DOMContentLoaded', inicializarPainelEntregador);
 
- 

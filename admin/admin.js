@@ -192,4 +192,3 @@ btnLogout.addEventListener('click', () => { logoutUser(); window.location.href =
 
 document.addEventListener('DOMContentLoaded', inicializarPainelAdmin);
 
- 

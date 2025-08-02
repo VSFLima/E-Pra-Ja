@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("Erro no processo de login:", error);
             
             let friendlyMessage = "E-mail ou senha incorretos. Tente novamente.";
-            if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
+            if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found' || error.code === 'auth/invalid-email') {
                 friendlyMessage = "E-mail ou senha incorretos. Verifique seus dados.";
             }
             
