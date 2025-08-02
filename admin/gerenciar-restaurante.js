@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const messageContainer = document.getElementById('message-container');
     const restauranteIdInput = document.getElementById('restauranteId');
     const donoIdInput = document.getElementById('donoId');
-    const passwordInput = document.getElementById('password-dono');
+    const uidInput = document.getElementById('uid-dono'); // Novo campo para UID
     const emailInput = document.getElementById('email-dono');
     const btnLogout = document.getElementById('btn-logout');
 
@@ -59,8 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     emailInput.readOnly = true;
                 }
             }
-            passwordInput.placeholder = "Deixe em branco para não alterar";
-            passwordInput.required = false;
+            // Oculta o campo de UID no modo de edição
+            uidInput.closest('.form-group').style.display = 'none';
 
         } catch (error) {
             showMessage(`Erro ao carregar dados: ${error.message}`, true);
@@ -87,19 +87,18 @@ document.addEventListener('DOMContentLoaded', () => {
             email: emailInput.value,
         };
 
-        const senha = passwordInput.value;
-
         try {
             if (id) { // Editando
                 await atualizarRestaurantePeloAdmin(id, donoIdInput.value, dadosRestaurante, dadosUsuario);
                 showMessage('Restaurante atualizado com sucesso!', false);
             } else { // Criando
-                if (senha.length < 6) {
-                    showMessage('A senha é obrigatória e deve ter no mínimo 6 caracteres.', true);
+                const uid = uidInput.value;
+                if (!uid) {
+                    showMessage('O UID do usuário do Firebase Auth é obrigatório.', true);
                     return;
                 }
-                await criarRestaurantePeloAdmin(dadosRestaurante, dadosUsuario, senha);
-                showMessage('Restaurante criado com sucesso! O login de acesso foi criado.', false);
+                await criarRestaurantePeloAdmin(uid, dadosRestaurante, dadosUsuario);
+                showMessage('Documentos do restaurante criados com sucesso!', false);
             }
             
             setTimeout(() => { window.location.href = 'index.html'; }, 2000);
@@ -119,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     carregarDadosRestaurante(id);
                 } else {
                     pageTitle.textContent = 'Criar Novo Restaurante';
-                    passwordInput.required = true;
+                    alert("LEMBRETE: Para criar um novo restaurante, primeiro crie o usuário de login no painel do Firebase Authentication e copie o UID gerado aqui.");
                 }
             } else {
                 window.location.href = '/paginas/login.html';

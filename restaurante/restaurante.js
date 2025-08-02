@@ -38,6 +38,7 @@ const linkEnviarComprovante = document.getElementById('link-enviar-comprovante')
 const managerMessagePopup = document.getElementById('manager-message-popup');
 const managerMessageText = document.getElementById('manager-message-text');
 const btnFecharMensagem = document.getElementById('btn-fechar-mensagem');
+// Elementos para o menu responsivo
 const sidebar = document.getElementById('sidebar');
 const menuToggle = document.getElementById('menu-toggle');
 const overlay = document.getElementById('overlay');
@@ -234,7 +235,6 @@ formAtribuir.addEventListener('submit', async (e) => {
     try {
         await atribuirEntregadorPedido(meuRestauranteId, pedidoParaAtribuir, entregadorId, taxaEntrega);
         modalAtribuir.classList.remove('visible');
-        formAtribuir.reset();
     } catch (error) { console.error("Erro ao atribuir pedido:", error); }
 });
 
@@ -289,3 +289,4 @@ async function inicializarPainelRestaurante() {
 btnLogout.addEventListener('click', () => { logoutUser(); window.location.href = '/paginas/login.html'; });
 document.addEventListener('DOMContentLoaded', inicializarPainelRestaurante);
 
+ 

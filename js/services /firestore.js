@@ -54,8 +54,15 @@ export const getHistoricoEntregador = async (entregadorId) => {
 
 // --- 3. FUNÇÕES DE GESTÃO DE RESTAURANTES (ADMIN) ---
 
-export const criarRestaurantePeloAdmin = async (dadosRestaurante, dadosUsuario) => {
-    // ... (Lógica para criar restaurante, requer criação manual do Auth)
+export const criarRestaurantePeloAdmin = async (uid, dadosRestaurante, dadosUsuario) => {
+    try {
+        const batch = writeBatch(db);
+        const userDocRef = doc(db, "utilizadores", uid);
+        batch.set(userDocRef, { ...dadosUsuario, role: 'restaurante', status: 'ativo' });
+        const restauranteDocRef = doc(db, "restaurantes", uid);
+        batch.set(restauranteDocRef, { ...dadosRestaurante, donoId: uid });
+        await batch.commit();
+    } catch (error) { console.error("Erro ao criar restaurante pelo admin:", error); throw error; }
 };
 
 export const atualizarRestaurantePeloAdmin = async (restauranteId, donoId, dadosRestaurante, dadosUsuario) => {
@@ -199,3 +206,4 @@ export const salvarPedidoNoHistoricoCliente = async (userId, dadosPedido, nomeRe
     } catch (error) { console.error("Erro ao salvar no histórico:", error); }
 };
 
+ 

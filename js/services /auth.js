@@ -2,42 +2,63 @@
 /* Localização: /js/services/auth.js */
 
 // --- 1. IMPORTAÇÕES ---
-// Importa os serviços de Auth e DB que configuramos no firebase-config.js
 import { db, auth } from '../firebase-config.js';
 
-// Importa todas as funções de Autenticação que vamos usar
 import {
-  createUserWithEmailAndPassword,
+  createUserWithEmailAndPassword, // (ESSENCIAL) Função para criar usuários
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
   sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
 
-// Importa as funções do Firestore para buscar o perfil do usuário
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
 
 
 // --- 2. FUNÇÕES DE AUTENTICAÇÃO EXPORTADAS ---
 
 /**
- * Autentica um usuário existente com e-mail e senha.
+ * (NOVO E COMPLETO) Registra um novo usuário no Firebase Auth e cria seu
+ * documento de dados no Firestore.
  * @param {string} email - O e-mail do usuário.
  * @param {string} password - A senha do usuário.
+ * @param {object} additionalData - Dados para o documento 'utilizadores' (nome, cpf, role).
  * @returns {Promise<UserCredential>} O objeto com as credenciais do usuário.
+ */
+export const registerUser = async (email, password, additionalData) => {
+  try {
+    // Cria o usuário no serviço de Autenticação
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    // Cria o documento de dados na coleção 'utilizadores'
+    const userDocRef = doc(db, "utilizadores", user.uid);
+    await setDoc(userDocRef, {
+      email: user.email,
+      ...additionalData
+    });
+
+    return userCredential;
+  } catch (error) {
+    console.error("Erro ao registrar usuário:", error.message);
+    throw error;
+  }
+};
+
+/**
+ * Autentica um usuário existente com e-mail e senha.
  */
 export const loginUser = async (email, password) => {
   try {
     return await signInWithEmailAndPassword(auth, email, password);
   } catch (error) {
     console.error("Erro ao fazer login:", error.message);
-    throw error; // Lança o erro para ser tratado no script que chamou
+    throw error;
   }
 };
 
 /**
  * Desconecta o usuário atualmente logado.
- * @returns {Promise<void>}
  */
 export const logoutUser = async () => {
   try {
@@ -50,9 +71,6 @@ export const logoutUser = async () => {
 
 /**
  * Observa mudanças no estado de autenticação (login/logout).
- * @param {function} callback - Função a ser executada quando o estado muda.
- * Ela recebe o objeto 'user' (ou null) como argumento.
- * @returns {Unsubscribe} Uma função para cancelar o observador.
  */
 export const onAuthChange = (callback) => {
   return onAuthStateChanged(auth, callback);
@@ -60,8 +78,6 @@ export const onAuthChange = (callback) => {
 
 /**
  * Busca o perfil (role) de um usuário no Firestore.
- * @param {string} uid - O ID do usuário.
- * @returns {Promise<string|null>} A role do usuário ou null se não for encontrado.
  */
 export const getUserRole = async (uid) => {
   try {
@@ -77,8 +93,6 @@ export const getUserRole = async (uid) => {
 
 /**
  * Envia um e-mail de redefinição de senha.
- * @param {string} email - O e-mail do usuário que solicitou a redefinição.
- * @returns {Promise<void>}
  */
 export const sendPasswordReset = async (email) => {
     try {
