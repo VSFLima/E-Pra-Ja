@@ -1,12 +1,13 @@
-
 /* E-Pra-Já v4: Serviço de Autenticação (auth.js) */
 /* Localização: /js/services/auth.js */
 
-// --- 1. IMPORTAÇÕES ---
+// --- 1. IMPORTAÇÕES (CORRIGIDAS) ---
+// Importa os serviços de Auth e DB que configuramos no firebase-config.js
 import { db, auth } from '../firebase-config.js';
 
+// As importações agora usam os links CDN completos, que funcionam em qualquer hospedagem.
 import {
-  createUserWithEmailAndPassword, // (ESSENCIAL) Função para criar usuários
+  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
@@ -19,7 +20,7 @@ import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.15.0/f
 // --- 2. FUNÇÕES DE AUTENTICAÇÃO EXPORTADAS ---
 
 /**
- * (NOVO E COMPLETO) Registra um novo usuário no Firebase Auth e cria seu
+ * (COMPLETO) Registra um novo usuário no Firebase Auth e cria seu
  * documento de dados no Firestore.
  * @param {string} email - O e-mail do usuário.
  * @param {string} password - A senha do usuário.
