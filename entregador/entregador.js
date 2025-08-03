@@ -10,6 +10,7 @@ import { getDocs, collection, query, where, doc, updateDoc, onSnapshot } from "h
 const nomeEntregadorEl = document.getElementById('nome-entregador');
 const listaPedidosEl = document.getElementById('lista-pedidos-entregador');
 const btnLogout = document.getElementById('btn-logout');
+// Elementos para o menu responsivo
 const sidebar = document.getElementById('sidebar');
 const menuToggle = document.getElementById('menu-toggle');
 const overlay = document.getElementById('overlay');

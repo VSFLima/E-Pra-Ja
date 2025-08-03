@@ -1,11 +1,11 @@
 /* E-Pra-Já v4: Script da Página de Cadastro de Restaurante (cadastro.js) */
 /* Localização: /js/cadastro.js */
 
-// --- 1. IMPORTAÇÕES (CORRIGIDO) ---
-// Agora importa as funções corretas do nosso serviço de autenticação
+// --- 1. IMPORTAÇÕES ---
+import { auth, db } from '../firebase-config.js';
+// Importa as funções corretas do nosso serviço de autenticação
 import { registerUser, loginUser } from './services/auth.js';
-import { db } from '../firebase-config.js';
-import { doc, setDoc, collection, Timestamp, writeBatch, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+import { doc, setDoc, collection, Timestamp, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const ufInput = document.getElementById('uf');
     const numeroInput = document.getElementById('numero');
     
-    // --- 3. FUNÇÃO DE EXIBIR MENSAGEM ---
+    // --- 3. FUNÇÃO DE EXIBIR MENSAGEM (COMPLETA) ---
     const showMessage = (message, isError = false) => {
         messageContainer.textContent = message;
         messageContainer.style.display = 'block';
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    // --- 7. EVENT LISTENER DO FORMULÁRIO (CORRIGIDO) ---
+    // --- 7. EVENT LISTENER DO FORMULÁRIO ---
     cadastroForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         submitBtn.disabled = true;
@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const email = cadastroForm.email.value;
             const password = cadastroForm.password.value;
             
-            // Passo 1: Preparar os dados para o Firestore
+            // Passo 1: Preparar os dados do usuário
             const dadosUsuario = {
                 nome: cadastroForm['nome-responsavel'].value,
                 cpf: cpf,
@@ -103,15 +103,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 status: "ativo"
             };
             
-            // Passo 2: Chamar a função de registro do serviço (AGORA FUNCIONAL)
-            await registerUser(email, password, dadosUsuario);
+            // Passo 2: Chamar a função de registro do serviço (ARQUITETURA CORRETA)
+            const userCredential = await registerUser(email, password, dadosUsuario);
+            const user = userCredential.user;
             
             // Passo 3: Preparar e salvar os dados do restaurante
             const trialEndDate = new Date();
             trialEndDate.setDate(trialEndDate.getDate() + 7);
             const enderecoCompleto = `${logradouroInput.value}, ${numeroInput.value}, ${cadastroForm.complemento.value} - ${bairroInput.value}, ${cidadeInput.value} - ${ufInput.value}`;
             const dadosRestaurante = {
-                donoId: auth.currentUser.uid, // Pega o UID do usuário recém-criado
+                donoId: user.uid,
                 nome: cadastroForm['nome-restaurante'].value,
                 enderecoCompleto: enderecoCompleto,
                 possuiCnpj: cadastroForm.possuiCnpj.value === 'sim',
@@ -123,9 +124,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 solicitouDesbloqueio: false,
                 info: { telefone: "", horarios: "", logoUrl: "" },
             };
-            await setDoc(doc(db, "restaurantes", auth.currentUser.uid), dadosRestaurante);
+            await setDoc(doc(db, "restaurantes", user.uid), dadosRestaurante);
             
-            // Passo 4: Fazer o login automático (redundante, pois o registerUser já loga, mas garante a sessão)
+            // Passo 4: Fazer o login automático
             await loginUser(email, password);
             
             showMessage('Conta criada com sucesso! Redirecionando para o seu painel...', false);
