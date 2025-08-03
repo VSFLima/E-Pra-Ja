@@ -2,9 +2,9 @@
 /* Localização: /js/cadastro.js */
 
 // --- 1. IMPORTAÇÕES ---
-import { auth, db } from '../firebase-config.js';
 // Importa as funções corretas do nosso serviço de autenticação
 import { registerUser, loginUser } from './services/auth.js';
+import { db } from '../firebase-config.js';
 import { doc, setDoc, collection, Timestamp, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
 
 document.addEventListener('DOMContentLoaded', () => {

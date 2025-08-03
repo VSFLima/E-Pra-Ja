@@ -1,8 +1,8 @@
 /* E-Pra-Já v4: Serviço de Interação com o Firestore (firestore.js) */
 /* Localização: /js/services/firestore.js */
 
-// --- 1. IMPORTAÇÕES ---
-import { db } from './firebase-config.js';
+// --- 1. IMPORTAÇÕES (CORRIGIDAS) ---
+import { db } from '../firebase-config.js';
 import {
   doc, getDoc, getDocs, collection, addDoc, updateDoc, deleteDoc,
   query, where, onSnapshot, setDoc, Timestamp, writeBatch

@@ -30,12 +30,12 @@ const fecharModalAcessoBtn = document.getElementById('fechar-modal-acesso-btn');
 const formAcesso = document.getElementById('form-acesso');
 const restauranteIdAcessoInput = document.getElementById('restaurante-id-acesso');
 const nomeRestauranteModalEl = document.getElementById('nome-restaurante-modal');
-// (NOVO) Elementos para o menu responsivo
+// Elementos para o menu responsivo
 const sidebar = document.getElementById('sidebar');
 const menuToggle = document.getElementById('menu-toggle');
 const overlay = document.getElementById('overlay');
 
-// --- 3. (NOVO) LÓGICA DO MENU RESPONSIVO ---
+// --- 3. LÓGICA DO MENU RESPONSIVO ---
 const toggleMenu = () => {
     sidebar.classList.toggle('open');
     overlay.classList.toggle('visible');
@@ -192,4 +192,3 @@ btnLogout.addEventListener('click', () => { logoutUser(); window.location.href =
 
 document.addEventListener('DOMContentLoaded', inicializarPainelAdmin);
 
- 
