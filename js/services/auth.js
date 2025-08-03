@@ -20,16 +20,16 @@ import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.15.0/f
 // --- 2. FUNÇÕES DE AUTENTICAÇÃO EXPORTADAS ---
 
 /**
- * (COMPLETO) Registra um novo usuário no Firebase Auth e cria seu
+ * (COMPLETO) Regista um novo utilizador no Firebase Auth e cria o seu
  * documento de dados no Firestore.
- * @param {string} email - O e-mail do usuário.
- * @param {string} password - A senha do usuário.
+ * @param {string} email - O e-mail do utilizador.
+ * @param {string} password - A senha do utilizador.
  * @param {object} additionalData - Dados para o documento 'utilizadores' (nome, cpf, role).
- * @returns {Promise<UserCredential>} O objeto com as credenciais do usuário.
+ * @returns {Promise<UserCredential>} O objeto com as credenciais do utilizador.
  */
 export const registerUser = async (email, password, additionalData) => {
   try {
-    // Cria o usuário no serviço de Autenticação
+    // Cria o utilizador no serviço de Autenticação
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
@@ -42,13 +42,13 @@ export const registerUser = async (email, password, additionalData) => {
 
     return userCredential;
   } catch (error) {
-    console.error("Erro ao registrar usuário:", error.message);
+    console.error("Erro ao registar utilizador:", error.message);
     throw error;
   }
 };
 
 /**
- * Autentica um usuário existente com e-mail e senha.
+ * Autentica um utilizador existente com e-mail e senha.
  */
 export const loginUser = async (email, password) => {
   try {
@@ -60,12 +60,12 @@ export const loginUser = async (email, password) => {
 };
 
 /**
- * Desconecta o usuário atualmente logado.
+ * Desconecta o utilizador atualmente logado.
  */
 export const logoutUser = async () => {
   try {
     await signOut(auth);
-  } catch (error) {
+  } catch (error)
     console.error("Erro ao fazer logout:", error.message);
     throw error;
   }
@@ -79,7 +79,7 @@ export const onAuthChange = (callback) => {
 };
 
 /**
- * Busca o perfil (role) de um usuário no Firestore.
+ * Busca o perfil (role) de um utilizador no Firestore.
  */
 export const getUserRole = async (uid) => {
   try {
@@ -88,7 +88,7 @@ export const getUserRole = async (uid) => {
     const docSnap = await getDoc(userDocRef);
     return docSnap.exists() ? docSnap.data().role : null;
   } catch (error) {
-    console.error("Erro ao buscar perfil do usuário:", error.message);
+    console.error("Erro ao buscar perfil do utilizador:", error.message);
     throw error;
   }
 };

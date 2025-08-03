@@ -1,4 +1,3 @@
-
 /* E-Pra-Já v4: Script do Painel do Entregador (entregador.js) */
 /* Localização: /entregador/entregador.js */
 

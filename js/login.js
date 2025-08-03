@@ -2,7 +2,7 @@
 /* Localização: /js/login.js */
 
 // --- 1. IMPORTAÇÕES (CORRIGIDO) ---
-// Agora importa as funções de serviço que criamos em auth.js
+// Agora importa as funções de serviço que criamos em auth.js e as funções do SDK via CDN
 import { loginUser, getUserRole } from './services/auth.js';
 
 document.addEventListener('DOMContentLoaded', () => {

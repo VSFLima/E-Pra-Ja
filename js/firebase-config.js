@@ -33,3 +33,4 @@ const storage = getStorage(app); // Serviço de Armazenamento de Arquivos (para 
 // --- 4. EXPORTAÇÃO DOS MÓDULOS ---
 // Exportamos as instâncias para que outros arquivos JS possam usá-las.
 export { db, auth, storage };
+
