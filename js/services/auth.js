@@ -1,8 +1,9 @@
 /* E-Pra-Já v4: Serviço de Autenticação (auth.js) */
 /* Localização: /js/services/auth.js */
 
-// --- 1. IMPORTAÇÕES (CORRIGIDAS) ---
-// Importa os serviços de Auth e DB que configuramos no firebase-config.js
+// --- 1. IMPORTAÇÕES ---
+import { db, auth } from '../firebase-config.js';
+
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -11,41 +12,57 @@ import {
   sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
-import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+import { doc, getDoc, setDoc, writeBatch } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 
 // --- 2. FUNÇÕES DE AUTENTICAÇÃO EXPORTADAS ---
 
 /**
- * (COMPLETO) Regista um novo utilizador no Firebase Auth e cria o seu
- * documento de dados no Firestore.
- * @param {string} email - O e-mail do utilizador.
- * @param {string} password - A senha do utilizador.
- * @param {object} additionalData - Dados para o documento 'utilizadores' (nome, cpf, role).
- * @returns {Promise<UserCredential>} O objeto com as credenciais do utilizador.
+ * (NOVO E COMPLETO) Registra um novo RESTAURANTE. Esta função é a única
+ * responsável por todo o fluxo: cria o login, o documento do usuário e o
+ * documento do restaurante em uma única operação segura.
+ * @param {string} email - O e-mail do usuário.
+ * @param {string} password - A senha do usuário.
+ * @param {object} dadosUsuario - Dados para a coleção 'utilizadores'.
+ * @param {object} dadosRestaurante - Dados para a coleção 'restaurantes'.
+ * @returns {Promise<UserCredential>} O objeto com as credenciais do usuário.
  */
-export const registerUser = async (email, password, additionalData) => {
+export const registerRestaurante = async (email, password, dadosUsuario, dadosRestaurante) => {
   try {
-    // Cria o utilizador no serviço de Autenticação
+    // Passo 1: Cria o usuário no serviço de Autenticação
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
-    // Cria o documento de dados na coleção 'utilizadores'
+    // Passo 2: Usa uma "writeBatch" para garantir que ambas as escritas no Firestore
+    // aconteçam juntas, ou nenhuma delas acontece. Isso evita inconsistências.
+    const batch = writeBatch(db);
+
+    // Prepara a criação do documento na coleção 'utilizadores'
     const userDocRef = doc(db, "utilizadores", user.uid);
-    await setDoc(userDocRef, {
+    batch.set(userDocRef, {
       email: user.email,
-      ...additionalData
+      ...dadosUsuario
     });
+
+    // Prepara a criação do documento na coleção 'restaurantes'
+    const restauranteDocRef = doc(db, "restaurantes", user.uid);
+    batch.set(restauranteDocRef, {
+      donoId: user.uid, // Garante que o donoId é o mesmo do usuário criado
+      ...dadosRestaurante
+    });
+
+    // Passo 3: Executa a operação em lote
+    await batch.commit();
 
     return userCredential;
   } catch (error) {
-    console.error("Erro ao registar utilizador:", error.message);
+    console.error("Erro ao registrar restaurante:", error.message);
     throw error;
   }
 };
 
 /**
- * Autentica um utilizador existente com e-mail e senha.
+ * Autentica um usuário existente com e-mail e senha.
  */
 export const loginUser = async (email, password) => {
   try {
@@ -57,12 +74,12 @@ export const loginUser = async (email, password) => {
 };
 
 /**
- * Desconecta o utilizador atualmente logado.
+ * Desconecta o usuário atualmente logado.
  */
 export const logoutUser = async () => {
   try {
     await signOut(auth);
-  } catch (error)
+  } catch (error) {
     console.error("Erro ao fazer logout:", error.message);
     throw error;
   }
@@ -76,7 +93,7 @@ export const onAuthChange = (callback) => {
 };
 
 /**
- * Busca o perfil (role) de um utilizador no Firestore.
+ * Busca o perfil (role) de um usuário no Firestore.
  */
 export const getUserRole = async (uid) => {
   try {
@@ -85,7 +102,7 @@ export const getUserRole = async (uid) => {
     const docSnap = await getDoc(userDocRef);
     return docSnap.exists() ? docSnap.data().role : null;
   } catch (error) {
-    console.error("Erro ao buscar perfil do utilizador:", error.message);
+    console.error("Erro ao buscar perfil do usuário:", error.message);
     throw error;
   }
 };

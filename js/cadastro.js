@@ -1,12 +1,10 @@
 /* E-Pra-Já v4: Script da Página de Cadastro de Restaurante (cadastro.js) */
 /* Localização: /js/cadastro.js */
 
-// --- 1. IMPORTAÇÕES (CORRIGIDAS) ---
-import { auth, db } from '../firebase-config.js';
+// --- 1. IMPORTAÇÕES ---
 // Importa as funções corretas do nosso serviço de autenticação
-import { registerUser, loginUser } from './services/auth.js';
-// As importações agora usam os links CDN completos
-import { doc, setDoc, collection, Timestamp, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+import { registerRestaurante, loginUser } from './services/auth.js';
+import { Timestamp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     
@@ -78,42 +76,30 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    // --- 7. EVENT LISTENER DO FORMULÁRIO ---
+    // --- 7. EVENT LISTENER DO FORMULÁRIO (CORRIGIDO) ---
     cadastroForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         submitBtn.disabled = true;
-        submitBtn.textContent = 'Verificando dados...';
+        submitBtn.textContent = 'Processando...';
         
-        const cpf = cpfInput.value;
+        const email = cadastroForm.email.value;
+        const password = cadastroForm.password.value;
+        
         try {
-            const q = query(collection(db, "utilizadores"), where("cpf", "==", cpf));
-            const querySnapshot = await getDocs(q);
-            if (!querySnapshot.empty) throw new Error('Este CPF já está cadastrado no sistema.');
-            
-            submitBtn.textContent = 'Processando...';
-            
-            const email = cadastroForm.email.value;
-            const password = cadastroForm.password.value;
-            
             // Passo 1: Preparar os dados do usuário
             const dadosUsuario = {
                 nome: cadastroForm['nome-responsavel'].value,
-                cpf: cpf,
+                cpf: cpfInput.value,
                 whatsapp: whatsappInput.value,
                 role: "restaurante",
                 status: "ativo"
             };
             
-            // Passo 2: Chamar a função de registro do serviço (ARQUITETURA CORRETA)
-            const userCredential = await registerUser(email, password, dadosUsuario);
-            const user = userCredential.user;
-            
-            // Passo 3: Preparar e salvar os dados do restaurante
+            // Passo 2: Preparar os dados do restaurante
             const trialEndDate = new Date();
             trialEndDate.setDate(trialEndDate.getDate() + 7);
             const enderecoCompleto = `${logradouroInput.value}, ${numeroInput.value}, ${cadastroForm.complemento.value} - ${bairroInput.value}, ${cidadeInput.value} - ${ufInput.value}`;
             const dadosRestaurante = {
-                donoId: user.uid,
                 nome: cadastroForm['nome-restaurante'].value,
                 enderecoCompleto: enderecoCompleto,
                 possuiCnpj: cadastroForm.possuiCnpj.value === 'sim',
@@ -125,7 +111,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 solicitouDesbloqueio: false,
                 info: { telefone: "", horarios: "", logoUrl: "" },
             };
-            await setDoc(doc(db, "restaurantes", user.uid), dadosRestaurante);
+            
+            // Passo 3: Chamar a função de registro do serviço (ARQUITETURA CORRETA)
+            await registerRestaurante(email, password, dadosUsuario, dadosRestaurante);
             
             // Passo 4: Fazer o login automático
             await loginUser(email, password);
