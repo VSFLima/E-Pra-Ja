@@ -1,18 +1,19 @@
 /* E-Pra-Já v4: Script da Página de Cadastro de Restaurante (cadastro.js) */
 /* Localização: /js/cadastro.js */
 
-// --- 1. IMPORTAÇÕES ---
+// --- 1. IMPORTAÇÕES (CORRIGIDAS) ---
 import { auth, db } from '../firebase-config.js';
 // Importa as funções corretas do nosso serviço de autenticação
 import { registerUser, loginUser } from './services/auth.js';
-import { doc, setDoc, collection, Timestamp, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+// As importações agora usam os links CDN completos
+import { doc, setDoc, collection, Timestamp, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 document.addEventListener('DOMContentLoaded', () => {
-
+    
     // --- 2. ELEMENTOS DO DOM ---
     const cadastroForm = document.getElementById('cadastro-form');
     if (!cadastroForm) return;
-
+    
     const submitBtn = document.getElementById('submit-btn');
     const messageContainer = document.getElementById('message-container');
     const possuiCnpjRadios = document.querySelectorAll('input[name="possuiCnpj"]');
@@ -26,26 +27,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const cidadeInput = document.getElementById('cidade');
     const ufInput = document.getElementById('uf');
     const numeroInput = document.getElementById('numero');
-
+    
     // --- 3. FUNÇÃO DE EXIBIR MENSAGEM (COMPLETA) ---
     const showMessage = (message, isError = false) => {
         messageContainer.textContent = message;
         messageContainer.style.display = 'block';
         messageContainer.className = isError ? 'message error' : 'message success';
     };
-
+    
     // --- 4. FUNÇÕES DE MÁSCARA E VALIDAÇÃO ---
     const applyMask = (input, maskFunc) => input.addEventListener('input', e => e.target.value = maskFunc(e.target.value));
     const maskCPF = v => v.replace(/\D/g, '').slice(0, 11).replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2');
     const maskCNPJ = v => v.replace(/\D/g, '').slice(0, 14).replace(/(\d{2})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1/$2').replace(/(\d{4})(\d{1,2})$/, '$1-$2');
     const maskWhatsApp = v => v.replace(/\D/g, '').slice(0, 11).replace(/(\d{2})(\d)/, '($1) $2').replace(/(\d{5})(\d)/, '$1-$2').replace(/(-\d{4})\d+?$/, '$1');
     const maskCEP = v => v.replace(/\D/g, '').slice(0, 8).replace(/(\d{5})(\d)/, '$1-$2');
-
+    
     applyMask(cpfInput, maskCPF);
     applyMask(cnpjInput, maskCNPJ);
     applyMask(whatsappInput, maskWhatsApp);
     applyMask(cepInput, maskCEP);
-
+    
     // --- 5. LÓGICA DA API DE CEP ---
     cepInput.addEventListener('blur', async (e) => {
         const cep = e.target.value.replace(/\D/g, '');
@@ -66,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("Erro ao buscar CEP:", error);
         }
     });
-
+    
     // --- 6. LÓGICA CONDICIONAL DO FORMULÁRIO ---
     possuiCnpjRadios.forEach(radio => {
         radio.addEventListener('change', (e) => {
@@ -76,31 +77,37 @@ document.addEventListener('DOMContentLoaded', () => {
             cadastroForm['nome-empresa'].required = isSim;
         });
     });
-
-    // --- 7. EVENT LISTENER DO FORMULÁRIO (CORRIGIDO) ---
+    
+    // --- 7. EVENT LISTENER DO FORMULÁRIO ---
     cadastroForm.addEventListener('submit', async (e) => {
-        e.preventDefault(); // Impede o recarregamento da página
+        e.preventDefault();
         submitBtn.disabled = true;
-        submitBtn.textContent = 'Processando...';
-
-        const email = cadastroForm.email.value;
-        const password = cadastroForm.password.value;
+        submitBtn.textContent = 'Verificando dados...';
         
+        const cpf = cpfInput.value;
         try {
+            const q = query(collection(db, "utilizadores"), where("cpf", "==", cpf));
+            const querySnapshot = await getDocs(q);
+            if (!querySnapshot.empty) throw new Error('Este CPF já está cadastrado no sistema.');
+            
+            submitBtn.textContent = 'Processando...';
+            
+            const email = cadastroForm.email.value;
+            const password = cadastroForm.password.value;
+            
             // Passo 1: Preparar os dados do usuário
             const dadosUsuario = {
                 nome: cadastroForm['nome-responsavel'].value,
-                cpf: cpfInput.value,
+                cpf: cpf,
                 whatsapp: whatsappInput.value,
                 role: "restaurante",
                 status: "ativo"
             };
-
-            // Passo 2: Chamar a função de registro do serviço
-            // Esta função já verifica se o e-mail existe e cria o usuário no Auth e o doc no Firestore
+            
+            // Passo 2: Chamar a função de registro do serviço (ARQUITETURA CORRETA)
             const userCredential = await registerUser(email, password, dadosUsuario);
             const user = userCredential.user;
-
+            
             // Passo 3: Preparar e salvar os dados do restaurante
             const trialEndDate = new Date();
             trialEndDate.setDate(trialEndDate.getDate() + 7);
@@ -113,7 +120,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 cnpj: cadastroForm.cnpj.value || null,
                 nomeEmpresa: cadastroForm['nome-empresa'].value || null,
                 accessValidUntil: Timestamp.fromDate(trialEndDate),
-                status: "teste", statusPagamento: "pendente", solicitouDesbloqueio: false,
+                status: "teste",
+                statusPagamento: "pendente",
+                solicitouDesbloqueio: false,
                 info: { telefone: "", horarios: "", logoUrl: "" },
             };
             await setDoc(doc(db, "restaurantes", user.uid), dadosRestaurante);
@@ -123,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             showMessage('Conta criada com sucesso! Redirecionando para o seu painel...', false);
             setTimeout(() => { window.location.href = '/restaurante/'; }, 2000);
-
+            
         } catch (error) {
             console.error("Erro no processo de cadastro:", error);
             let friendlyMessage = error.message;

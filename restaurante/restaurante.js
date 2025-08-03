@@ -13,7 +13,7 @@ import {
     atualizarStatusPedido,
     atribuirEntregadorPedido
 } from '../js/services/firestore.js';
-import { doc, getDoc, collection, query, where, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+import { doc, getDoc, collection, query, where, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 // --- 2. ELEMENTOS DO DOM ---
 const nomeRestauranteEl = document.getElementById('nome-restaurante');

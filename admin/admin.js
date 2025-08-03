@@ -13,7 +13,7 @@ import {
     apagarRestauranteCompleto,
     concederAcessoManual
 } from '../js/services/firestore.js';
-import { collection, onSnapshot } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+import { collection, onSnapshot } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 // --- 2. ELEMENTOS DO DOM ---
 const nomeUtilizadorEl = document.getElementById('nome-utilizador');

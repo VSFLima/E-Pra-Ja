@@ -4,7 +4,7 @@
 // --- 1. IMPORTAÇÕES ---
 import { db } from '../js/firebase-config.js';
 import { onAuthChange, getUserRole, logoutUser } from '../js/services/auth.js';
-import { getDocs, collection, query, where, doc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+import { getDocs, collection, query, where } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 // --- 2. ELEMENTOS DO DOM ---
 const nomeEntregadorEl = document.getElementById('nome-entregador');

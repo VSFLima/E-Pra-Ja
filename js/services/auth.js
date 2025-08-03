@@ -3,18 +3,15 @@
 
 // --- 1. IMPORTAÇÕES (CORRIGIDAS) ---
 // Importa os serviços de Auth e DB que configuramos no firebase-config.js
-import { db, auth } from '../firebase-config.js';
-
-// As importações agora usam os links CDN completos, que funcionam em qualquer hospedagem.
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
   sendPasswordResetEmail
-} from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
-import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 
 // --- 2. FUNÇÕES DE AUTENTICAÇÃO EXPORTADAS ---

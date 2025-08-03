@@ -5,7 +5,7 @@
 import { db } from '../js/firebase-config.js';
 import { onAuthChange, getUserRole } from '../js/services/auth.js';
 import { getRestauranteById, criarRestaurantePeloAdmin, atualizarRestaurantePeloAdmin } from '../js/services/firestore.js';
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 document.addEventListener('DOMContentLoaded', () => {
 

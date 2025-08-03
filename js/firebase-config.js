@@ -4,10 +4,10 @@
 
 // --- 1. IMPORTAÇÕES (CORRIGIDAS) ---
 // As importações agora usam os links CDN completos, que funcionam em qualquer hospedagem.
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
-import { getStorage } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+import { getStorage } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-storage.js";
 
 // --- 2. CONFIGURAÇÃO DO FIREBASE (COMPLETA E CORRIGIDA) ---
 // Estas são as suas credenciais oficiais, agora com o appId correto.

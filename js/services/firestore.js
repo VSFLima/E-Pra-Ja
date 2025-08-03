@@ -2,11 +2,10 @@
 /* Localização: /js/services/firestore.js */
 
 // --- 1. IMPORTAÇÕES (CORRIGIDAS) ---
-import { db } from '../firebase-config.js';
 import {
   doc, getDoc, getDocs, collection, addDoc, updateDoc, deleteDoc,
   query, where, onSnapshot, setDoc, Timestamp, writeBatch
-} from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 // --- 2. FUNÇÕES DE LEITURA (GET) ---
 
