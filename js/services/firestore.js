@@ -1,7 +1,8 @@
-/* E-Pra-Já v4: Serviço de Interação com o Firestore (firestore.js) */
+/* E-Pra-Já v5: Serviço de Interação com o Firestore (firestore.js) */
 /* Localização: /js/services/firestore.js */
 
-// --- 1. IMPORTAÇÕES (CORRIGIDAS) ---
+// --- 1. IMPORTAÇÕES ---
+import { db } from './firebase-config.js';
 import {
   doc, getDoc, getDocs, collection, addDoc, updateDoc, deleteDoc,
   query, where, onSnapshot, setDoc, Timestamp, writeBatch
@@ -89,12 +90,12 @@ export const atualizarStatusRestaurante = async (restauranteId, novoStatus) => {
 
 // --- 4. FUNÇÕES DE GESTÃO DE USUÁRIOS ---
 
-export const criarUsuarioEntregador = async (email, nome, restauranteId) => {
+export const criarUsuarioEntregador = async (email, nome, restauranteId, veiculo) => {
     try {
         const userDocRef = doc(collection(db, "utilizadores"));
         await setDoc(userDocRef, {
             email: email, nome: nome, role: "entregador",
-            status: "ativo", restauranteId: restauranteId
+            status: "ativo", restauranteId: restauranteId, veiculo: veiculo
         });
     } catch (error) { console.error("Erro ao criar entregador:", error); throw error; }
 };
@@ -154,7 +155,29 @@ export const atribuirEntregadorPedido = async (restauranteId, pedidoId, entregad
     } catch (error) { console.error("Erro ao atribuir entregador:", error); throw error; }
 };
 
-// --- 6. FUNÇÕES DE NEGÓCIO (COBRANÇA, MENSAGENS, ASSINATURA) ---
+// --- 6. FUNÇÕES DE GESTÃO DE CATEGORIAS E ADICIONAIS (v5) ---
+
+export const addCategoria = async (restauranteId, nomeCategoria) => {
+    try {
+        const categoriasRef = collection(db, "restaurantes", restauranteId, "categorias");
+        await addDoc(categoriasRef, { nome: nomeCategoria });
+    } catch (error) { console.error("Erro ao adicionar categoria:", error); throw error; }
+};
+
+export const deleteCategoria = async (restauranteId, categoriaId) => {
+    try {
+        await deleteDoc(doc(db, "restaurantes", restauranteId, "categorias", categoriaId));
+    } catch (error) { console.error("Erro ao apagar categoria:", error); throw error; }
+};
+
+export const addGrupoAdicional = async (restauranteId, nomeGrupo) => {
+    try {
+        const gruposRef = collection(db, "restaurantes", restauranteId, "gruposAdicionais");
+        await addDoc(gruposRef, { nome: nomeGrupo, ativo: true, itens: [] });
+    } catch (error) { console.error("Erro ao adicionar grupo de adicional:", error); throw error; }
+};
+
+// --- 7. FUNÇÕES DE NEGÓCIO (COBRANÇA, MENSAGENS, ETC.) ---
 
 export const solicitarDesbloqueio = async (restauranteId) => {
     try {
@@ -205,5 +228,11 @@ export const salvarPedidoNoHistoricoCliente = async (userId, dadosPedido, nomeRe
         const historicoRef = collection(db, "utilizadores", userId, "historicoPedidos");
         await addDoc(historicoRef, { ...dadosPedido, nomeRestaurante: nomeRestaurante });
     } catch (error) { console.error("Erro ao salvar no histórico:", error); }
+};
+
+export const salvarConfigLoja = async (restauranteId, configs) => {
+    try {
+        await updateDoc(doc(db, "restaurantes", restauranteId), configs);
+    } catch (error) { console.error("Erro ao salvar configurações da loja:", error); throw error; }
 };
 
