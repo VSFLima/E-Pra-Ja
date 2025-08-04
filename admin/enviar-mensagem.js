@@ -1,4 +1,4 @@
-/* E-Pra-Já v4: Script da Página de Envio de Mensagem (enviar-mensagem.js) */
+/* E-Pra-Já v5: Script da Página de Envio de Mensagem (enviar-mensagem.js) */
 /* Localização: /admin/enviar-mensagem.js */
 
 // --- 1. IMPORTAÇÕES ---

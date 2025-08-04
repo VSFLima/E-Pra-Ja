@@ -1,124 +1,133 @@
-/* E-Pra-Já v4: Script do Painel do Entregador (entregador.js) */
-/* Localização: /entregador/entregador.js */
+/* E-Pra-Já v5: Script do Dashboard do Entregador (dashboard.js) */
+/* Localização: /entregador/dashboard.js */
 
 // --- 1. IMPORTAÇÕES ---
 import { db } from '../js/firebase-config.js';
 import { onAuthChange, getUserRole, logoutUser } from '../js/services/auth.js';
-import { getDocs, collection, query, where } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+import { getHistoricoEntregador } from '../js/services/firestore.js';
 
-// --- 2. ELEMENTOS DO DOM ---
-const nomeEntregadorEl = document.getElementById('nome-entregador');
-const listaPedidosEl = document.getElementById('lista-pedidos-entregador');
-const btnLogout = document.getElementById('btn-logout');
-const sidebar = document.getElementById('sidebar');
-const menuToggle = document.getElementById('menu-toggle');
-const overlay = document.getElementById('overlay');
-const mapContainer = document.getElementById('map');
+document.addEventListener('DOMContentLoaded', () => {
 
-// --- 3. ESTADO DA APLICAÇÃO ---
-let meuId = null;
-let listenerPedidos = null;
-let map = null; // Variável para o mapa
-let entregadorMarker = null; // Marcador para a posição do entregador
+    // --- 2. ELEMENTOS DO DOM ---
+    const ganhosHojeEl = document.getElementById('ganhos-hoje');
+    const ganhosSemanaEl = document.getElementById('ganhos-semana');
+    const historicoEntregasListaEl = document.getElementById('historico-entregas-lista');
+    const btnLogout = document.getElementById('btn-logout');
+    // Elementos para o menu responsivo
+    const sidebar = document.getElementById('sidebar');
+    const menuToggle = document.getElementById('menu-toggle');
+    const overlay = document.getElementById('overlay');
 
-// --- 4. LÓGICA DO MENU RESPONSIVO ---
-const toggleMenu = () => {
-    sidebar.classList.toggle('open');
-    overlay.classList.toggle('visible');
-};
+    // --- 3. ESTADO DA APLICAÇÃO ---
+    let meuId = null;
 
-if (menuToggle) menuToggle.addEventListener('click', toggleMenu);
-if (overlay) overlay.addEventListener('click', toggleMenu);
+    // --- 4. LÓGICA DO MENU RESPONSIVO ---
+    const toggleMenu = () => {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('visible');
+    };
 
-// --- 5. LÓGICA DO MAPA INTERATIVO ---
+    if (menuToggle) menuToggle.addEventListener('click', toggleMenu);
+    if (overlay) overlay.addEventListener('click', toggleMenu);
 
-/**
- * Inicializa o mapa na tela.
- */
-function inicializarMapa() {
-    if (!mapContainer) return;
-    // Coordenadas iniciais (ex: centro do Rio de Janeiro)
-    map = L.map('map').setView([-22.9068, -43.1729], 13);
+    // --- 5. FUNÇÕES DE CÁLCULO E RENDERIZAÇÃO ---
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
+    /**
+     * Busca todos os pedidos concluídos de um entregador e gera o dashboard.
+     */
+    async function gerarDashboard() {
+        if (!meuId) return;
 
-    // Tenta obter a localização do entregador
-    navigator.geolocation.watchPosition(
-        (position) => {
-            const { latitude, longitude } = position.coords;
-            const latLng = [latitude, longitude];
-            
-            if (entregadorMarker) {
-                entregadorMarker.setLatLng(latLng);
-            } else {
-                entregadorMarker = L.marker(latLng).addTo(map)
-                    .bindPopup('Você está aqui.').openPopup();
+        try {
+            const todasAsEntregas = await getHistoricoEntregador(meuId);
+
+            calcularErenderizarGanhos(todasAsEntregas);
+            renderizarHistorico(todasAsEntregas);
+
+        } catch (error) {
+            console.error("Erro ao gerar dashboard:", error);
+            historicoEntregasListaEl.innerHTML = '<p style="color: red;">Erro ao carregar seu histórico.</p>';
+        }
+    }
+
+    /**
+     * Calcula e exibe os ganhos do dia e da semana.
+     * @param {Array} entregas - Lista de todas as entregas concluídas.
+     */
+    function calcularErenderizarGanhos(entregas) {
+        let ganhosHoje = 0;
+        let ganhosSemana = 0;
+        const hoje = new Date();
+        const inicioDoDia = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
+        const inicioDaSemana = new Date(hoje.setDate(hoje.getDate() - 7));
+
+        entregas.forEach(entrega => {
+            const dataEntrega = entrega.timestamp.toDate();
+            const taxa = entrega.taxaDeEntrega || 0;
+
+            if (dataEntrega >= inicioDoDia) {
+                ganhosHoje += taxa;
             }
-            map.setView(latLng, 15); // Centraliza o mapa na posição do entregador
-        },
-        (error) => {
-            console.warn("Não foi possível obter a localização:", error.message);
-        },
-        { enableHighAccuracy: true }
-    );
-}
+            if (dataEntrega >= inicioDaSemana) {
+                ganhosSemana += taxa;
+            }
+        });
 
-// --- 6. FUNÇÕES DE RENDERIZAÇÃO E LÓGICA DE PEDIDOS ---
-// (As funções escutarMeusPedidos e renderizarPedidos estão mantidas e completas)
-const escutarMeusPedidos = () => { /* ...código mantido... */ };
-const renderizarPedidos = (pedidos) => { /* ...código mantido... */ };
+        ganhosHojeEl.textContent = `R$ ${ganhosHoje.toFixed(2)}`;
+        ganhosSemanaEl.textContent = `R$ ${ganhosSemana.toFixed(2)}`;
+    }
 
-// --- 7. INICIALIZAÇÃO DA PÁGINA ---
-const inicializarPainelEntregador = () => {
-    onAuthChange(async (user) => {
-        if (user) {
-            meuId = user.uid;
-            const role = await getUserRole(meuId);
+    /**
+     * Renderiza a lista de histórico de entregas.
+     * @param {Array} entregas - Lista de todas as entregas concluídas.
+     */
+    function renderizarHistorico(entregas) {
+        historicoEntregasListaEl.innerHTML = '';
+        if (entregas.length === 0) {
+            historicoEntregasListaEl.innerHTML = '<p>Você ainda não completou nenhuma entrega.</p>';
+            return;
+        }
 
-            if (role === 'entregador') {
-                if (nomeEntregadorEl) nomeEntregadorEl.textContent = user.email;
-                inicializarMapa(); // Inicializa o mapa
-                escutarMeusPedidos();
+        entregas.forEach(entrega => {
+            const itemEl = document.createElement('div');
+            itemEl.className = 'historico-entrega';
+            const dataFormatada = entrega.timestamp.toDate().toLocaleDateString('pt-BR');
+            
+            itemEl.innerHTML = `
+                <div>
+                    <strong>Pedido #${entrega.id.substring(0, 6)}</strong>
+                    <span style="color: var(--cor-texto-suave); font-size: 0.9rem; display: block;">${dataFormatada}</span>
+                </div>
+                <strong style="color: var(--cor-sucesso);">+ R$ ${(entrega.taxaDeEntrega || 0).toFixed(2)}</strong>
+            `;
+            historicoEntregasListaEl.appendChild(itemEl);
+        });
+    }
+
+    // --- 6. INICIALIZAÇÃO DA PÁGINA ---
+    const inicializarDashboard = () => {
+        onAuthChange(async (user) => {
+            if (user) {
+                meuId = user.uid;
+                const role = await getUserRole(meuId);
+                if (role === 'entregador') {
+                    gerarDashboard();
+                } else {
+                    window.location.href = '/paginas/login.html';
+                }
             } else {
                 window.location.href = '/paginas/login.html';
             }
-        } else {
-            window.location.href = '/paginas/login.html';
-        }
-    });
-
-    listaPedidosEl.addEventListener('click', async (event) => {
-        if (event.target.classList.contains('btn-entregue')) {
-            const btn = event.target;
-            const pedidoId = btn.dataset.pedidoId;
-            const restauranteId = btn.dataset.restauranteId;
-
-            if (confirm('Tem certeza que deseja marcar este pedido como entregue?')) {
-                try {
-                    btn.disabled = true;
-                    btn.textContent = 'Atualizando...';
-                    const pedidoRef = doc(db, "restaurantes", restauranteId, "pedidos", pedidoId);
-                    await updateDoc(pedidoRef, { status: "Entregue" });
-                } catch (error) {
-                    console.error("Erro ao marcar como entregue:", error);
-                    alert('Ocorreu um erro. Tente novamente.');
-                    btn.disabled = false;
-                    btn.textContent = 'Marcar como Entregue';
-                }
-            }
-        }
-    });
-
-    if (btnLogout) {
-        btnLogout.addEventListener('click', () => {
-            if (listenerPedidos) listenerPedidos();
-            logoutUser();
-            window.location.href = '/paginas/login.html';
         });
-    }
-};
 
-document.addEventListener('DOMContentLoaded', inicializarPainelEntregador);
+        if (btnLogout) {
+            btnLogout.addEventListener('click', () => {
+                logoutUser();
+                window.location.href = '/paginas/login.html';
+            });
+        }
+    };
+
+    inicializarDashboard();
+});
 

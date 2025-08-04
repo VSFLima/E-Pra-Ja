@@ -1,9 +1,9 @@
-/* E-Pra-Já v4: Script da Página de Gerenciamento de Restaurante (admin.js) */
+/* E-Pra-Já v5: Script da Página de Gerenciamento de Restaurante (admin.js) */
 /* Localização: /admin/gerenciar-restaurante.js */
 
 // --- 1. IMPORTAÇÕES ---
 import { db } from '../js/firebase-config.js';
-import { onAuthChange, getUserRole } from '../js/services/auth.js';
+import { onAuthChange, getUserRole, logoutUser } from '../js/services/auth.js';
 import { getRestauranteById, criarRestaurantePeloAdmin, atualizarRestaurantePeloAdmin } from '../js/services/firestore.js';
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
@@ -15,11 +15,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const messageContainer = document.getElementById('message-container');
     const restauranteIdInput = document.getElementById('restauranteId');
     const donoIdInput = document.getElementById('donoId');
-    const uidInput = document.getElementById('uid-dono'); // Novo campo para UID
+    const uidInput = document.getElementById('uid-dono');
     const emailInput = document.getElementById('email-dono');
     const btnLogout = document.getElementById('btn-logout');
+    // Elementos para o menu responsivo
+    const sidebar = document.getElementById('sidebar');
+    const menuToggle = document.getElementById('menu-toggle');
+    const overlay = document.getElementById('overlay');
 
-    // --- 3. FUNÇÕES AUXILIARES ---
+    // --- 3. LÓGICA DO MENU RESPONSIVO ---
+    const toggleMenu = () => {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('visible');
+    };
+    if (menuToggle) menuToggle.addEventListener('click', toggleMenu);
+    if (overlay) overlay.addEventListener('click', toggleMenu);
+
+    // --- 4. FUNÇÕES AUXILIARES ---
     const showMessage = (message, isError = false) => {
         messageContainer.textContent = message;
         messageContainer.style.display = 'block';
@@ -32,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return date.toISOString().split('T')[0]; // Formato YYYY-MM-DD
     };
 
-    // --- 4. LÓGICA DE CARREGAMENTO (MODO EDIÇÃO) ---
+    // --- 5. LÓGICA DE CARREGAMENTO (MODO EDIÇÃO) ---
     async function carregarDadosRestaurante(id) {
         try {
             const restaurante = await getRestauranteById(id);
@@ -59,15 +71,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     emailInput.readOnly = true;
                 }
             }
-            // Oculta o campo de UID no modo de edição
-            uidInput.closest('.form-group').style.display = 'none';
+            uidInput.closest('.form-group').style.display = 'none'; // Esconde o campo de UID no modo de edição
 
         } catch (error) {
             showMessage(`Erro ao carregar dados: ${error.message}`, true);
         }
     }
 
-    // --- 5. LÓGICA DE SALVAMENTO (CRIAR/EDITAR) ---
+    // --- 6. LÓGICA DE SALVAMENTO (CRIAR/EDITAR) ---
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const id = restauranteIdInput.value;
@@ -98,17 +109,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
                 await criarRestaurantePeloAdmin(uid, dadosRestaurante, dadosUsuario);
-                showMessage('Documentos do restaurante criados com sucesso!', false);
+                showMessage('Documentos do restaurante criados com sucesso! Lembre-se de criar o login para este usuário no painel do Firebase Auth.', false);
             }
             
-            setTimeout(() => { window.location.href = 'index.html'; }, 2000);
+            setTimeout(() => { window.location.href = 'index.html'; }, 3000);
 
         } catch (error) {
             showMessage(`Erro ao salvar: ${error.message}`, true);
         }
     });
 
-    // --- 6. INICIALIZAÇÃO DA PÁGINA ---
+    // --- 7. INICIALIZAÇÃO DA PÁGINA ---
     const inicializarPagina = () => {
         onAuthChange(async (user) => {
             if (user && await getUserRole(user.uid) === 'gestor') {
@@ -118,7 +129,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     carregarDadosRestaurante(id);
                 } else {
                     pageTitle.textContent = 'Criar Novo Restaurante';
-                    alert("LEMBRETE: Para criar um novo restaurante, primeiro crie o usuário de login no painel do Firebase Authentication e copie o UID gerado aqui.");
                 }
             } else {
                 window.location.href = '/paginas/login.html';

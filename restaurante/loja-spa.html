@@ -1,0 +1,66 @@
+<!-- E-Pra-Já v5: Conteúdo da Seção "Minha Loja" (SPA) -->
+<!-- Localização: /restaurante/loja-spa.html -->
+
+<!-- CONFIGURAÇÕES GERAIS DA LOJA -->
+<section id="config-loja" class="dashboard-card">
+    <div class="card-header">
+        <h3>Configurações da Loja</h3>
+    </div>
+
+    <div class="management-form">
+        <!-- Status da Loja -->
+        <div class="form-group" style="grid-column: 1 / -1; flex-direction: row; align-items: center; gap: 1rem; border-bottom: 1px solid var(--cor-cinza-claro); padding-bottom: 1.5rem;">
+            <label for="switch-status-loja-main" style="margin: 0; font-size: 1.1rem; font-weight: 600;">Status da Loja:</label>
+            <span id="label-status-loja-main">Fechada</span>
+            <label class="switch">
+                <input type="checkbox" id="switch-status-loja-main">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <!-- Pedido Mínimo -->
+        <div class="form-group">
+            <label for="pedido-minimo">Valor do Pedido Mínimo (R$)</label>
+            <input type="number" step="0.01" id="pedido-minimo" placeholder="Ex: 20.00">
+        </div>
+
+        <!-- Tempo de Preparo -->
+        <div class="form-group">
+            <label for="tempo-preparo">Tempo Médio de Preparo (minutos)</label>
+            <input type="number" id="tempo-preparo" placeholder="Ex: 30">
+        </div>
+        
+        <div class="form-group" style="grid-column: 1 / -1;">
+             <button id="btn-salvar-config" class="btn btn-primario">Salvar Configurações</button>
+        </div>
+    </div>
+</section>
+
+<!-- LINKS E ASSINATURA -->
+<section id="links-assinatura" class="dashboard-card">
+    <div class="card-header">
+        <h3>Links e Assinatura</h3>
+    </div>
+    <div class="management-form">
+        <!-- Link do Cardápio -->
+        <div class="form-group">
+            <label>Link do seu Cardápio Digital</label>
+            <input type="text" id="link-cardapio" readonly>
+            <button id="btn-copiar-link-cardapio" class="btn" style="margin-top: 0.5rem;">Copiar Link</button>
+        </div>
+        <!-- Link de Convite -->
+        <div class="form-group">
+            <label>Seu Link de Convite</label>
+            <input type="text" id="link-convite" readonly>
+            <button id="btn-copiar-link-convite" class="btn" style="margin-top: 0.5rem;">Copiar Link</button>
+        </div>
+        <!-- Status da Assinatura -->
+        <div class="form-group">
+            <label>Status da sua Assinatura</label>
+            <div id="status-assinatura" style="padding: 1rem; border: 1px solid var(--cor-cinza-claro); border-radius: var(--borda-radius);">
+                <!-- O status será preenchido aqui pelo JS -->
+            </div>
+        </div>
+    </div>
+</section>
+
